@@ -51,6 +51,11 @@ try {
   for (const vp of [viewports[0], viewports[4]]) {
     const { ctx, page } = await open(vp);
     await page.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((i) => (i.loading = 'eager')));
+    await page.evaluate(() => {
+      document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('is-revealed'));
+      document.querySelectorAll('details').forEach((d) => (d.open = true));
+    });
+    await page.waitForTimeout(600);
     await page.locator('#faqs button[aria-expanded]').first().click();
     await page.locator('#contact button[type="submit"]').click();
     const res = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']).analyze();
@@ -276,6 +281,90 @@ try {
     }));
     ok('page is readable without JavaScript (prerendered, FAQ answers visible)', r.h1 === 'Comfort begins with warmth.' && r.sections >= 8 && r.faqVisible, JSON.stringify(r));
     await ctx.close();
+  }
+
+  // 12. refinement checks: hero clarity, one navy chapter, compact research,
+  //     collapsed prototype references, scroll reveal and reduced motion
+  {
+    const { ctx, page } = await open({ width: 1440, height: 900 });
+    const h = await page.evaluate(() => {
+      const vis = (el) => {
+        const r = el.getBoundingClientRect();
+        return r.top >= 0 && r.bottom <= window.innerHeight;
+      };
+      const desc = Array.from(document.querySelectorAll('#top p')).find((p) => p.textContent.trim() === 'Arm-and-hand warming sleeve');
+      const ctas = Array.from(document.querySelectorAll('#top a')).map((a) => a.textContent.trim());
+      const img = document.querySelector('#top picture img').getBoundingClientRect();
+      return {
+        descriptorVisible: !!desc && vis(desc),
+        ctas,
+        ctasVisible: Array.from(document.querySelectorAll('#top a')).every(vis),
+        imgBottom: Math.round(img.bottom),
+        imgWidth: Math.round(img.width),
+      };
+    });
+    ok('hero (1440×900): descriptor, both actions and the whole product are in the first viewport',
+      h.descriptorVisible && h.ctasVisible && h.ctas.includes('Explore the Sleeve') && h.ctas.includes('View the Research') && h.imgBottom <= 900,
+      JSON.stringify(h));
+    const dark = await page.evaluate(() => {
+      const lum = (c) => {
+        const m = c.match(/\d+(\.\d+)?/g);
+        if (!m) return 1;
+        const [r, g, b] = m.slice(0, 3).map(Number).map((v) => v / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      return Array.from(document.querySelectorAll('main > section')).filter((s) => {
+        const bg = getComputedStyle(s).backgroundColor;
+        return bg !== 'rgba(0, 0, 0, 0)' && lum(bg) < 0.1;
+      }).map((s) => s.getAttribute('aria-labelledby'));
+    });
+    ok('exactly one deep navy section (construction)', dark.length === 1 && dark[0] === 'construction-title', dark.join());
+    const research = await page.evaluate(() => Math.round(document.getElementById('research').getBoundingClientRect().height));
+    ok('research section is compact by default (< 1200px tall at 1440, was 1875px)', research < 1200, `${research}px`);
+    const refs = await page.evaluate(() => {
+      const d = document.querySelector('#details details');
+      return { open: d.open, imgsVisibleClosed: Array.from(d.querySelectorAll('img')).some((i) => i.checkVisibility()) };
+    });
+    const summary = page.locator('#details details summary');
+    await summary.scrollIntoViewIfNeeded();
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(300);
+    const refsOpen = await page.evaluate(() => {
+      const d = document.querySelector('#details details');
+      return { open: d.open, figs: Array.from(d.querySelectorAll('figure')).map((f) => f.querySelector('figcaption').textContent) };
+    });
+    ok('prototype references are collapsed by default and open by keyboard',
+      !refs.open && !refs.imgsVisibleClosed && refsOpen.open && refsOpen.figs.length === 2 && refsOpen.figs.every((c) => /Prototype 2\.4/.test(c)),
+      JSON.stringify(refsOpen.figs));
+    const disc = page.locator('#research details summary').first();
+    await disc.scrollIntoViewIfNeeded();
+    await disc.click();
+    const discOpen = await page.evaluate(() => document.querySelector('#research details').open);
+    ok('research "full citation" disclosure opens', discOpen);
+    // scroll reveal: after scrolling through, nothing stays hidden
+    await page.evaluate(async () => {
+      // instant jumps (the page itself scrolls smoothly, which would make
+      // rapid scrollTo calls cancel each other)
+      for (let y = 0; y < document.documentElement.scrollHeight; y += 400) {
+        window.scrollTo({ top: y, behavior: 'instant' });
+        await new Promise((r) => setTimeout(r, 70));
+      }
+    });
+    await page.waitForTimeout(700);
+    const hidden = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-reveal]')).filter((e) => Number(getComputedStyle(e).opacity) < 0.99).length,
+    );
+    ok('scroll reveal: every revealed block is fully visible after scrolling', hidden === 0, `${hidden} still hidden`);
+    await ctx.close();
+
+    const rm = await open({ width: 1440, height: 900 }, { reducedMotion: 'reduce' });
+    const rmHidden = await rm.page.evaluate(() => ({
+      ready: document.documentElement.classList.contains('reveal-ready'),
+      hidden: Array.from(document.querySelectorAll('[data-reveal]')).filter((e) => Number(getComputedStyle(e).opacity) < 0.99).length,
+    }));
+    ok('prefers-reduced-motion: no reveal hiding at all', !rmHidden.ready && rmHidden.hidden === 0, JSON.stringify(rmHidden));
+    await rm.ctx.close();
   }
 
   // 11. content verification (brief §10): list every hit for manual review

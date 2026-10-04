@@ -1,32 +1,42 @@
-/* An editorial reference list, not cards. */
+/* Compact editorial reference list; the caveat sits beside the heading. */
 .section {
-  padding-block: clamp(72px, 3rem + 4vw, 112px);
-  background: var(--white);
+  padding-block: clamp(72px, 3rem + 4.5vw, 120px);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
-  row-gap: 48px;
+  row-gap: 40px;
+  align-items: start;
 }
 
 .head {
-  grid-column: 1 / span 7;
+  grid-column: 1 / span 4;
+  position: sticky;
+  top: calc(var(--header-h) + 40px);
 }
 
-/* visually distinct scope note: the page's single plum rule */
+.intro {
+  margin-top: 18px;
+  color: var(--ink-2);
+  max-width: 34ch;
+}
+
+/* the page's single plum rule: these studies did not test WARMUP */
 .scope {
-  margin-top: 24px;
-  padding: 14px 0 14px 18px;
+  margin-top: 22px;
+  padding: 12px 0 12px 16px;
   border-left: 3px solid var(--plum);
   color: var(--ink);
-  font-weight: 540;
-  max-width: 48ch;
+  font-weight: 560;
+  max-width: 34ch;
 }
 
 .list {
-  grid-column: 1 / -1;
+  grid-column: 6 / -1;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -35,57 +45,136 @@
 
 .entry {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--gutter);
-  padding-block: 32px 36px;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  column-gap: 24px;
+  align-items: start;
+  padding-block: 24px 22px;
   border-bottom: 1px solid var(--line-strong);
 }
 
 .year {
-  grid-column: 1 / span 2;
   color: var(--ink);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   font-stretch: 112%;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
+  line-height: 1.3;
   font-variant-numeric: tabular-nums;
 }
 
-.body {
-  grid-column: 3 / span 9;
-}
-
 .title {
-  font-size: 1.1875rem;
-  font-weight: 640;
+  font-size: 1.125rem;
+  font-weight: 660;
   font-stretch: 104%;
   line-height: 1.35;
   letter-spacing: -0.005em;
-  max-width: 56ch;
 }
 
 .meta {
-  margin-top: 10px;
+  margin-top: 4px;
   color: var(--ink-2);
-  font-size: 0.9375rem;
-  line-height: 1.5;
+  font-size: var(--fs-meta);
 }
 
 .journal {
   font-style: italic;
 }
 
-.summary {
-  margin-top: 14px;
+.brief {
+  margin-top: 8px;
+  color: var(--ink);
+  font-size: 1rem;
+  max-width: 58ch;
+}
+
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control);
+  background: var(--white);
+  color: var(--blue);
+  font-size: 0.9375rem;
+  font-weight: 620;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    border-color var(--t-fast) ease,
+    background-color var(--t-fast) ease;
+}
+
+.source:hover {
+  border-color: var(--blue);
+  text-decoration: none;
+}
+
+/* disclosure: full citation, summary and every link */
+.more {
+  margin-top: 6px;
+}
+
+.more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--blue);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more summary::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--t-mid) var(--ease-out);
+}
+
+.more[open] summary::after {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.more summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.moreBody {
+  display: grid;
+  gap: 10px;
+  margin: 4px 0 8px;
+  padding: 16px 18px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 0.9375rem;
   max-width: 64ch;
+}
+
+.fullTitle {
+  font-weight: 620;
+}
+
+.citation {
+  color: var(--ink-2);
 }
 
 .links {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 24px;
-  margin: 12px 0 0;
+  gap: 0 20px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -95,20 +184,32 @@
   align-items: center;
   min-height: 44px;
   font-weight: 600;
-  font-size: 0.9375rem;
 }
 
 @media (max-width: 1023px) {
   .head {
     grid-column: 1 / -1;
+    position: static;
+  }
+  .list {
+    grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 599px) {
+  .entry {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 6px;
+  }
   .year {
-    grid-column: 1 / -1;
-    font-size: 1.25rem;
-    margin-bottom: 8px;
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1.125rem;
+    align-self: center;
+  }
+  .source {
+    grid-column: 2;
+    grid-row: 1;
   }
   .body {
     grid-column: 1 / -1;

@@ -135,12 +135,17 @@ export function Contact() {
   return (
     <section id="contact" className={styles.section} aria-labelledby="contact-title">
       <div className={`container ${styles.inner}`}>
-        <div className={styles.intro}>
+        <div className={styles.intro} data-reveal>
           <h2 id="contact-title">{contact.title}</h2>
-          <p>{contact.body}</p>
+          <p className={styles.body}>{contact.body}</p>
+          <ul className={styles.notes}>
+            {contact.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
         </div>
 
-        <form className={styles.form} noValidate onSubmit={onSubmit} aria-labelledby="contact-title">
+        <form className={styles.form} noValidate onSubmit={onSubmit} aria-labelledby="contact-title" data-reveal>
           <div className={styles.row}>
             {field('name', 'Name', { type: 'text', autoComplete: 'name' })}
             {field('email', 'Work email', { type: 'email', autoComplete: 'email' })}

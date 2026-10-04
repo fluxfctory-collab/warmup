@@ -11,7 +11,7 @@ npm install
 npm run dev        # development server, http://localhost:5173
 npm run build      # tsc typecheck → client build → SSR build → prerender into dist/
 npm run preview    # serves dist/ at http://localhost:4173
-npm run shots      # screenshots at 6 viewports → docs/screenshots/ (run after build)
+npm run shots      # screenshots at 6 viewports → docs/screenshots/ (SHOTS_DIR=… to redirect; run after build)
 npm run qa         # automated checks → docs/qa-report.md (run after build)
 npm run images     # regenerate all images from source-assets/ (Python)
 ```
@@ -23,18 +23,14 @@ npm run images     # regenerate all images from source-assets/ (Python)
 
 ## 2. Screenshots (all actually captured, in `docs/screenshots/`)
 
-| File | What |
+| Path | What |
 |---|---|
-| `desktop-1440-first-viewport.png`, `desktop-1440-full.png` | Desktop hero and full page, 1440×1000 |
-| `desktop-1280-first-viewport.png`, `desktop-1280-full.png` | 1280×800 |
-| `tablet-1024-first-viewport.png`, `tablet-1024-full.png` | 1024×768 |
-| `tablet-768-first-viewport.png`, `tablet-768-full.png` | 768×1024 |
-| `mobile-390-first-viewport.png`, `mobile-390-full.png` | Mobile hero and full page, 390×844 |
-| `mobile-360-first-viewport.png`, `mobile-360-full.png` | 360×800 |
-| `mobile-390-header@3x.png` | Logo descriptor legibility at phone density |
-| `state-mobile-menu-open.png`, `state-hotspot-mitten-active.png`, `state-hotspot-strap-active.png`, `state-mobile-hotspot-tap.png`, `state-faq-open.png`, `state-form-errors.png`, `state-form-not-connected.png` | Interactive states |
+| `before/` | The page before the art-direction refinement (section 9), at 1440×900, 1280×800, 1024×768, 768×1024, 390×844 and 360×800: first viewport plus full page for each |
+| `after/` | The same set after the refinement, plus `state-*.png` interaction states (menu, hotspots, prototype references, research disclosure, FAQ, form errors and the not-connected message) and `mobile-390-header@3x.png` (logo legibility) |
+| `compare-desktop-1440-hero.png` | Before and after, side by side: desktop first viewport at 1440×900 |
+| `compare-desktop-1440-full.png` | Before and after, side by side: desktop full page (scaled to 50%) |
 
-Pipeline review crops, at 100% and 200%, are in `docs/pipeline/`.
+Pipeline review crops, at 100% and 200%, are in `docs/pipeline/`; `fleece-edge-200.jpg` shows the de-haloed bottom edge.
 
 ## 3. Design decisions in brief
 
@@ -125,7 +121,7 @@ The composite was inspected at 100% and 200% (`docs/pipeline/mitten-100.jpg`, `m
 |---|---|---|
 | Build and typecheck | `npm run build` (tsc 5.9, Vite 7.3) | Passes, **0 type errors**. JS is 255 KB raw / 80.6 KB gzip, CSS 7 KB gzip, prerendered HTML 32.5 KB. |
 | Preview | `npm run preview` | Served and exercised by all checks below |
-| Automated QA | `npm run qa` (Playwright 1.56, Chromium 141) | **49 / 49 passed**. Full table in `docs/qa-report.md`. |
+| Automated QA | `npm run qa` (Playwright 1.56, Chromium 141) | **56 / 56 passed** after the refinement pass. Full table in `docs/qa-report.md`. |
 | Accessibility scan | @axe-core/playwright 4.13 (WCAG 2.0/2.1/2.2 A and AA, plus best practice) at 1440 and 390, with the FAQ opened and form errors shown | **0 violations** of any impact |
 | Horizontal overflow | `scrollWidth − clientWidth` at all 6 viewports | 0 px everywhere |
 | Console errors | All 6 viewports, including hydration | None |
@@ -186,3 +182,27 @@ No reference was dropped. All four from the client document are listed, newest f
 The scope note under the heading reads: "These studies look at warming methods before venous access. None of them evaluated the WARMUP sleeve."
 
 **Caveat.** Per the brief's rule ("if any link fails to resolve, drop that entry"), I did not observe any link failing, but I also could not load any of them directly from this sandbox. The URLs are the canonical DOI and PubMed URLs from the brief, plus the jhas-nu.in article page. Search results show that page and all the publisher pages exist.
+
+## 9. Art-direction refinement pass
+
+Principle: "clinical precision with textile warmth". The page's facts, references and mitten visual are unchanged; the changes are composition, staging and hierarchy.
+
+| Area | Change |
+|---|---|
+| Palette | Cool neutral `#F8FAFD`, pale blue `#EDF3FC`, pale warm `#FFF4EF`, plus one deep navy `#102446` chapter. Navy text tokens: white and `#C5CDDC` (about 9.9:1). |
+| Hero | Headline upper-left; a blue **"Arm-and-hand warming sleeve"** descriptor, short copy and the actions **Explore the Sleeve** / **View the Research** upper-right; the complete sleeve beneath on a faint white → pale-blue field with a low-saturation warm patch behind the mitten (no glow, no heat map); a compact four-item feature strip. At 1440×900 the descriptor, both actions and the whole sleeve with mitten sit in the first viewport (checked by `npm run qa`). |
+| Image staging | A thin bright rim along the fleece edge, visible at 2× density, came from edge un-premultiplying. The pipeline now clamps edge colours to the nearby interior colour (`scripts/imgpipe/segment.py`), which removed it (`docs/pipeline/fleece-edge-200.jpg`). Mitten geometry and pixels are unchanged. |
+| Introduction | Shorter: three labelled statements (what it is, when it is used, how it holds warmth) beside the wrist-seam detail in a shared image frame. |
+| Anatomy | Pale-blue chapter. Selecting a number or note now also outlines that feature on the image (blue, coral for the mitten). "Intended use" is a separate unnumbered note, not a hotspot. |
+| Prototype references | Collapsed by default into a native `<details>` labelled "Prototype references", with captions stating they are original photographs taken before the mitten update. |
+| Construction | The page's one deep navy section: heading, a large real-photo detail (strap with hook-and-loop strip, cuff patch, pouch slot; no mitten pixels), and four rows with small custom line icons drawn from the sleeve's parts. Coral marks only the mitten row. |
+| Clinical | Compact: heading row, then blood draw (A), peripheral IV (B) and a distinct same-patient reuse note. |
+| Research | 1,875 px → about 1,080 px at 1440. Each study shows year, a short accurate label, first author and journal, one sentence on design and population, and one **Source** link (DOI). The full title, all authors, citation, longer summary and every link sit in a "Full citation and details" disclosure. The "None of them evaluated the WARMUP sleeve" note stays beside the heading. No reference was removed. |
+| FAQ | Hairline rows, larger questions, plus/minus control, and the open row becomes a pale-blue panel. Copy unchanged. |
+| Contact | Invitation and form balanced. Two notes beside the form: professional enquiries only (no patient information), and that the form is a demo and not connected. The not-connected message is unchanged and no request is sent. |
+| Footer | Unchanged structure; descriptor shortened so logo, line and links align on the grid. |
+| Motion | One restrained scroll reveal (440 ms fade and 14 px rise, once, via IntersectionObserver). Content already on screen is never hidden; nothing is hidden without JavaScript or under `prefers-reduced-motion`. |
+
+**New QA checks** (all passing): hero clarity at 1440×900; exactly one navy section; research shorter than 1,200 px; prototype references collapsed and keyboard-openable; research disclosure opens; nothing left hidden after scrolling; reduced motion hides nothing. axe still reports **0 violations** at 1440 and 390, with every disclosure opened during the scan.
+
+**Visual limitations.** No arm-worn photo of the mitten version exists and no image-generation tool is configured here, so the clinical section uses typography rather than a worn visual; no bedside or needle imagery was invented. The rendered mitten is still the proposed visualization from Prototype 2.4.

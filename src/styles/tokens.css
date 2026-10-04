@@ -3,8 +3,8 @@
   /* colour: cool neutrals carry the page, the logo's blue carries action,
      coral (the logo's warm end) is rare and never small text */
   --white: #ffffff;
-  --bg: #f7f9fc;
-  --surface-blue: #edf2fb;
+  --bg: #f8fafd; /* cool neutral */
+  --surface-blue: #edf3fc; /* pale blue */
   --surface-warm: #fff4ef;
   --ink: #102446;
   --ink-2: #526078;
@@ -17,17 +17,23 @@
   --coral: #e44733; /* non-text only */
   --coral-text: #c4361f; /* coral as text or under white text */
   --coral-tint: rgba(228, 71, 51, 0.16);
+  --navy: #102446; /* the one deep section */
+  --on-navy: #ffffff;
+  --on-navy-2: #c5cddc; /* 9.9:1 on navy */
+  --navy-line: rgba(255, 255, 255, 0.16);
+  --navy-raise: #18305a;
   --fleece: #f1ece3;
   --knit: #3e434b;
 
   /* type */
   --font: 'Archivo Variable', 'Helvetica Neue', Arial, system-ui, sans-serif;
   --fs-h1: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem);
-  --fs-h2: clamp(1.75rem, 1.1rem + 2vw, 2.75rem);
+  --fs-h2: clamp(1.75rem, 1.1rem + 2vw, 2.875rem);
   --fs-h3: 1.3125rem;
   --fs-lead: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
   --fs-body: 1.0625rem;
   --fs-small: 0.875rem;
+  --fs-meta: 0.875rem;
   --wdth-display: 116%;
   --wdth-h2: 114%;
   --wdth-h3: 108%;
@@ -46,6 +52,7 @@
   --ease-out: cubic-bezier(0.22, 0.8, 0.26, 1);
   --t-fast: 160ms;
   --t-mid: 220ms;
+  --t-reveal: 440ms;
 }
 
 @media (max-width: 1279px) {

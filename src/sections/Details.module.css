@@ -1,7 +1,7 @@
+/* The product chapter: pale blue surface, one large view, annotations. */
 .section {
-  padding-block: clamp(80px, 3rem + 6vw, 136px);
-  background: var(--bg);
-  border-top: 1px solid var(--line);
+  padding-block: clamp(80px, 3rem + 6vw, 136px) clamp(64px, 3rem + 3vw, 96px);
+  background: var(--surface-blue);
 }
 
 .head {
@@ -24,7 +24,7 @@
 
 /* ---- anatomy grid ----------------------------------------------------- */
 .anatomy {
-  --row-gap: 32px;
+  --row-gap: 36px;
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -64,7 +64,7 @@
   align-items: baseline;
   max-width: 36ch;
   color: var(--ink-2);
-  font-size: var(--fs-small);
+  font-size: var(--fs-meta);
   line-height: 1.45;
   text-align: left;
   position: relative;
@@ -134,20 +134,31 @@
   grid-column: 4;
 }
 
+/* same-patient reuse is intended use, not a physical part: an unnumbered
+   note with its own label, set apart from the four features */
 .useNote {
   grid-column: 1 / span 2;
   grid-row: 3;
   align-self: start;
+  display: grid;
+  gap: 4px;
   margin: 0;
-  padding-top: 15px;
-  max-width: 30ch;
+  padding: 14px 0 0 16px;
+  max-width: 34ch;
+  border-left: 2px solid var(--ink);
   color: var(--ink);
   font-size: 1rem;
-  font-weight: 560;
-  font-stretch: 104%;
-  line-height: 1.45;
+  font-weight: 520;
+  line-height: 1.5;
   position: relative;
   z-index: 2;
+}
+
+.useLabel {
+  color: var(--ink-2);
+  font-size: var(--fs-meta);
+  font-weight: 650;
+  font-stretch: 104%;
 }
 
 .noteButton {
@@ -169,6 +180,7 @@
   place-items: center;
   width: 28px;
   height: 28px;
+  background: var(--white);
   border: 1.5px solid var(--blue);
   border-radius: 8px;
   color: var(--blue);
@@ -195,6 +207,12 @@
   line-height: 1.3;
 }
 
+.noteButton:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 .noteButton:hover .noteTitle {
   color: var(--blue);
 }
@@ -202,8 +220,36 @@
 .noteText {
   margin-top: 6px;
   color: var(--ink-2);
-  font-size: 0.9375rem;
+  font-size: 0.96875rem;
   line-height: 1.5;
+}
+
+/* ---- feature outline (selected detail) --------------------------------- */
+.outline {
+  position: absolute;
+  z-index: 1;
+  border: 1.5px solid var(--blue);
+  border-radius: 18px;
+  background: rgba(31, 56, 172, 0.035);
+  opacity: 0;
+  transform: scale(0.985);
+  pointer-events: none;
+  transition:
+    opacity var(--t-mid) ease,
+    transform var(--t-mid) var(--ease-out);
+}
+
+.outline[data-key='mitten'] {
+  border-color: var(--coral);
+  background: rgba(228, 71, 51, 0.035);
+}
+
+.anatomy[data-shown='strap'] .outline[data-key='strap'],
+.anatomy[data-shown='pouch'] .outline[data-key='pouch'],
+.anatomy[data-shown='fleece'] .outline[data-key='fleece'],
+.anatomy[data-shown='mitten'] .outline[data-key='mitten'] {
+  opacity: 1;
+  transform: none;
 }
 
 /* ---- hotspots ------------------------------------------------------------ */
@@ -252,6 +298,10 @@
     transform var(--t-mid) var(--ease-out);
 }
 
+.dot:hover .marker {
+  transform: translateY(-1px);
+}
+
 /* the badge's upward notch appears on the active marker */
 .marker::after {
   content: '';
@@ -279,14 +329,14 @@
   border-bottom-color: var(--coral-text);
 }
 
-/* ---- leader lines (desktop) -------------------------------------------- */
+/* ---- leader lines (desktop): one weight, one colour -------------------- */
 .leader {
   position: absolute;
   z-index: 2;
   width: 0;
   border-left: 1px solid var(--ink-2);
   box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.55);
-  opacity: 0.55;
+  opacity: 0.6;
   transition:
     opacity var(--t-fast) ease,
     border-color var(--t-fast) ease;
@@ -303,9 +353,9 @@
 }
 
 /* ---- active pair ------------------------------------------------------- */
-.anatomy[data-shown='strap'] :is(.dot[data-key='strap'] .marker),
-.anatomy[data-shown='pouch'] :is(.dot[data-key='pouch'] .marker),
-.anatomy[data-shown='fleece'] :is(.dot[data-key='fleece'] .marker) {
+.anatomy[data-shown='strap'] .dot[data-key='strap'] .marker,
+.anatomy[data-shown='pouch'] .dot[data-key='pouch'] .marker,
+.anatomy[data-shown='fleece'] .dot[data-key='fleece'] .marker {
   background: var(--blue);
   color: var(--white);
   box-shadow: 0 0 0 5px var(--blue-tint);
@@ -363,28 +413,90 @@
   color: var(--white);
 }
 
-/* ---- prototype reference ---------------------------------------------- */
+/* ---- prototype references: compact, collapsed by default ---------------- */
 .reference {
+  margin-top: clamp(56px, 2rem + 3vw, 88px);
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.refSummary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  min-height: 64px;
+  padding: 14px 52px 14px 0;
+  position: relative;
+  cursor: pointer;
+  list-style: none;
+}
+
+.refSummary::-webkit-details-marker {
+  display: none;
+}
+
+.refTitle {
+  color: var(--ink);
+  font-size: 1.0625rem;
+  font-weight: 660;
+  font-stretch: 106%;
+}
+
+.refHint {
+  color: var(--ink-2);
+  font-size: var(--fs-meta);
+}
+
+.refSummary:hover .refTitle {
+  color: var(--blue);
+}
+
+.refIcon {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.refIcon::before,
+.refIcon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 1.5px;
+  margin: -0.75px 0 0 -6px;
+  background: var(--ink);
+  border-radius: 1px;
+  transition: transform var(--t-mid) var(--ease-out);
+}
+
+.refIcon::after {
+  transform: rotate(90deg);
+}
+
+.reference[open] .refIcon::after {
+  transform: rotate(0deg);
+}
+
+.refBody {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
   align-items: end;
-  margin-top: clamp(72px, 3rem + 4vw, 120px);
-  padding-top: 32px;
-  border-top: 1px solid var(--line);
+  padding: 8px 0 32px;
 }
 
 .refText {
   grid-column: 1 / span 4;
   align-self: start;
-}
-
-.refText h3 {
-  font-size: 1.125rem;
-}
-
-.refText p {
-  margin-top: 10px;
   color: var(--ink-2);
   font-size: 0.9375rem;
   max-width: 36ch;
@@ -393,9 +505,9 @@
 .refFlat,
 .refWorn {
   margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.45;
   color: var(--ink-2);
+  font-size: var(--fs-meta);
+  line-height: 1.45;
 }
 
 .refFlat {
@@ -408,10 +520,6 @@
 
 .refImg {
   border-radius: 10px;
-  height: 260px;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
 }
 
 .refFlat .refImg {
@@ -421,7 +529,7 @@
 
 .refWorn .refImg {
   width: auto;
-  height: 300px;
+  height: 250px;
   max-width: 280px;
 }
 
@@ -431,7 +539,7 @@
   max-width: 34ch;
 }
 
-/* ---- tablet ------------------------------------------------------------- */
+/* ---- tablet: image with dots, caption, then a 2 × 2 numbered list ------- */
 @media (max-width: 1023px) {
   .head h2 {
     grid-column: 1 / -1;
@@ -439,20 +547,6 @@
   .intro {
     grid-column: 1 / span 9;
   }
-  .refText {
-    grid-column: 1 / -1;
-    margin-bottom: 24px;
-  }
-  .refFlat {
-    grid-column: 1 / span 9;
-  }
-  .refWorn {
-    grid-column: 10 / -1;
-  }
-}
-
-/* ---- tablet: image with dots, caption, then a 2 × 2 numbered list ------- */
-@media (max-width: 1023px) {
   .anatomy {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto auto;
@@ -487,13 +581,21 @@
   .useNote {
     grid-column: 1 / -1;
     grid-row: 4;
-    margin-top: 8px;
-    padding-top: 20px;
-    border-top: 1px solid var(--line-strong);
+    margin-top: 12px;
     max-width: none;
   }
   .leader {
     display: none;
+  }
+  .refText {
+    grid-column: 1 / -1;
+    margin-bottom: 20px;
+  }
+  .refFlat {
+    grid-column: 1 / span 9;
+  }
+  .refWorn {
+    grid-column: 10 / -1;
   }
 }
 
@@ -534,29 +636,27 @@
     padding: 14px 0 16px;
     border-width: 0 0 1px;
   }
-  .note:nth-child(-n + 2) {
-    padding-top: 14px;
-  }
   .useNote {
     order: 4;
-    margin-top: 20px;
-    padding-top: 0;
-    border-top: 0;
+    margin-top: 24px;
   }
   .leader {
     display: none;
+  }
+  .refHint {
+    flex-basis: 100%;
   }
   .refFlat {
     grid-column: 1 / -1;
   }
   .refWorn {
     grid-column: 1 / -1;
-    margin-top: 28px;
+    margin-top: 24px;
     display: flex;
     gap: 16px;
     align-items: end;
   }
   .refWorn .refImg {
-    height: 280px;
+    height: 240px;
   }
 }

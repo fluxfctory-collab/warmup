@@ -13,24 +13,60 @@
 
 .intro {
   grid-column: 1 / span 5;
+  align-self: center;
 }
 
-.intro p {
+.body {
   margin-top: 20px;
   color: var(--ink);
-  font-size: var(--fs-lead);
+  font-size: 1.25rem;
   line-height: 1.5;
   max-width: 28ch;
+}
+
+.notes {
+  display: grid;
+  gap: 0;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid #efd9cf;
+  max-width: 40ch;
+}
+
+.notes li {
+  display: flex;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #efd9cf;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.notes li::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 0.55em;
+  border-radius: 2.5px;
+  background: var(--coral);
 }
 
 .form {
   grid-column: 7 / -1;
   display: grid;
   gap: 22px;
-  padding: clamp(24px, 1rem + 2vw, 40px);
+  padding: clamp(24px, 1rem + 2.2vw, 44px);
   background: var(--white);
-  border: 1px solid #f1dcd2;
-  border-radius: var(--r-frame);
+  border: 1px solid #f0dcd3;
+  border-radius: 20px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 28px 60px -40px rgba(16, 36, 70, 0.45),
+    0 6px 18px -12px rgba(196, 54, 31, 0.18);
+  --reveal-delay: 80ms;
 }
 
 .row {
@@ -124,6 +160,15 @@
   align-items: center;
   gap: 16px 24px;
   margin-top: 4px;
+}
+
+.submit {
+  min-width: 172px;
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 
 .submit:disabled {

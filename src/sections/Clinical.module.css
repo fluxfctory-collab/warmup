@@ -1,81 +1,107 @@
+/* Compact clinical context: one heading row, then three short columns. */
 .section {
   padding-block: clamp(64px, 3rem + 3.5vw, 104px);
-  background: var(--bg);
-  border-top: 1px solid var(--line);
+  background: var(--white);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--gutter);
-  row-gap: 40px;
-}
-
-.title {
-  grid-column: 1 / span 6;
-}
-
-.blocks {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.block {
-  padding: 4px 48px 8px 0;
-}
-
-.block + .block {
-  padding: 4px 0 8px 48px;
-  border-left: 1px solid var(--line-strong);
-}
-
-.block p {
-  margin-top: 12px;
-  color: var(--ink-2);
-  max-width: 44ch;
-}
-
-.foot {
-  grid-column: 1 / -1;
+.head {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: baseline;
+  justify-content: space-between;
   gap: 12px 40px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line-strong);
 }
 
-.retention {
-  color: var(--ink);
-  font-weight: 560;
-  font-stretch: 104%;
-  max-width: 52ch;
+.head h2 {
+  max-width: 16em;
 }
 
 .scope {
-  margin: 0;
   color: var(--ink-2);
-  font-size: var(--fs-small);
+  font-size: var(--fs-meta);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gutter);
+  margin-top: clamp(32px, 1.5rem + 1.5vw, 48px);
+  align-items: stretch;
+}
+
+.block {
+  padding-top: 18px;
+  border-top: 2px solid var(--blue);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: var(--blue);
+  font-size: var(--fs-meta);
+  font-weight: 650;
+  font-stretch: 104%;
+}
+
+.index {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--blue);
+  border-radius: 7px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.block h3 {
+  font-size: 1.375rem;
+}
+
+.text {
+  margin-top: 10px;
+  color: var(--ink-2);
+  max-width: 40ch;
+}
+
+/* intended use, set apart from the two procedures */
+.retention {
+  padding: 18px 22px 22px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--ink);
+  border-radius: 0 0 12px 12px;
+}
+
+.retentionLabel {
+  color: var(--ink-2);
+  font-size: var(--fs-meta);
+  font-weight: 650;
+  font-stretch: 104%;
+}
+
+.retentionText {
+  margin-top: 10px;
+  color: var(--ink);
+  font-size: 1.0625rem;
+  font-weight: 540;
+  line-height: 1.5;
 }
 
 @media (max-width: 1023px) {
-  .title {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .retention {
     grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 767px) {
-  .blocks {
+@media (max-width: 599px) {
+  .row {
     grid-template-columns: 1fr;
-  }
-  .block {
-    padding: 0 0 24px;
-  }
-  .block + .block {
-    padding: 24px 0 0;
-    border-left: 0;
-    border-top: 1px solid var(--line-strong);
+    row-gap: 28px;
   }
 }

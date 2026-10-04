@@ -86,7 +86,7 @@ def flatten_on(img: Image.Image, color):
 
 
 # ---------------------------------------------------------------------------
-def export_product(rgb, a, manifest, hotspots_src):
+def export_product(rgb, a, manifest, hotspots_src, boxes_src=None):
     """Horizontal flat-lay + vertical art-directed version."""
     crgb, ca, (ox, oy) = crop_to_content(rgb, a, pad=(48, 48, 56, 110))
     srgb, sa = add_contact_shadow(crgb, ca, scale=1.0, down=(0, 1))
@@ -100,6 +100,17 @@ def export_product(rgb, a, manifest, hotspots_src):
     manifest["hotspots"] = {
         k: {"x": round((x - ox) / hero.width * 100, 2), "y": round((y - oy) / hero.height * 100, 2)}
         for k, (x, y) in hotspots_src.items()
+    }
+
+    boxes_src = boxes_src or {}
+    manifest["boxes"] = {
+        k: {
+            "x": round((x0 - ox) / hero.width * 100, 2),
+            "y": round((y0 - oy) / hero.height * 100, 2),
+            "w": round((x1 - x0) / hero.width * 100, 2),
+            "h": round((y1 - y0) / hero.height * 100, 2),
+        }
+        for k, (x0, y0, x1, y1) in boxes_src.items()
     }
 
     # vertical: rotate 90deg clockwise -> upper-arm cuff at the top, mitten at
@@ -126,6 +137,17 @@ def export_product(rgb, a, manifest, hotspots_src):
         manifest["hotspotsVertical"][k] = {
             "x": round((rx - vx0) / vert.width * 100, 2),
             "y": round((ry - vy0) / vert.height * 100, 2),
+        }
+    manifest["boxesVertical"] = {}
+    for k, (x0, y0, x1, y1) in boxes_src.items():
+        # rotation maps (x, y) -> (H0 - 1 - y, x)
+        rx0, rx1 = H0 - 1 - (y1 - oy), H0 - 1 - (y0 - oy)
+        ry0, ry1 = x0 - ox, x1 - ox
+        manifest["boxesVertical"][k] = {
+            "x": round((rx0 - vx0) / vert.width * 100, 2),
+            "y": round((ry0 - vy0) / vert.height * 100, 2),
+            "w": round((rx1 - rx0) / vert.width * 100, 2),
+            "h": round((ry1 - ry0) / vert.height * 100, 2),
         }
     return hero, vert
 

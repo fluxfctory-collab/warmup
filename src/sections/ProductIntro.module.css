@@ -1,6 +1,7 @@
+/* Material detail + three short statements: what, when, how. */
 .section {
-  padding-block: clamp(72px, 3rem + 4vw, 112px);
-  background: var(--bg);
+  padding-block: clamp(72px, 3rem + 4.5vw, 120px) clamp(64px, 3rem + 3.5vw, 104px);
+  background: var(--white);
 }
 
 .grid {
@@ -15,39 +16,72 @@
   margin: 0;
 }
 
+/* the shared image frame for every material detail on the page */
+.frame {
+  overflow: hidden;
+  border-radius: var(--r-frame);
+  box-shadow:
+    0 0 0 1px rgba(16, 36, 70, 0.06),
+    0 22px 44px -30px rgba(16, 36, 70, 0.45);
+}
+
 .img {
   width: 100%;
-  border-radius: var(--r-frame);
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
 }
 
 .caption {
   margin-top: 12px;
   color: var(--ink-2);
-  font-size: var(--fs-small);
+  font-size: var(--fs-meta);
   line-height: 1.45;
-  max-width: 44ch;
+  max-width: 46ch;
 }
 
 .copy {
   grid-column: 7 / -1;
+  --reveal-delay: 80ms;
 }
 
-.text {
-  margin-top: 28px;
-  max-width: 34em;
+.copy h2 {
+  max-width: 13em;
 }
 
-.text p:first-child {
-  font-size: var(--fs-lead);
+.points {
+  margin: 32px 0 0;
+  border-top: 1px solid var(--line-strong);
+}
+
+.point {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: 4px 24px;
+  padding: 16px 0 17px;
+  border-bottom: 1px solid var(--line);
+}
+
+.point dt {
+  color: var(--blue);
+  font-size: var(--fs-meta);
+  font-weight: 650;
+  font-stretch: 104%;
+  line-height: 1.6;
+  padding-top: 2px;
+}
+
+.point dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.125rem;
   line-height: 1.5;
 }
 
 .context {
-  margin-top: 36px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line-strong);
+  margin-top: 22px;
   color: var(--ink-2);
-  max-width: 34em;
+  font-size: 1rem;
+  max-width: 52ch;
 }
 
 @media (max-width: 1023px) {
@@ -57,6 +91,9 @@
   .copy {
     grid-column: 6 / -1;
   }
+  .point {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 767px) {
@@ -65,7 +102,6 @@
     grid-column: 1 / -1;
   }
   .figure {
-    max-width: 420px;
     margin-bottom: 40px;
   }
 }

@@ -17,6 +17,7 @@ export const images = {
   flatlay: { name: 'warmup-sleeve-with-mitten-flatlay', fallback: 'png', ...imageManifest.flatlay },
   vertical: { name: 'warmup-sleeve-with-mitten-vertical', fallback: 'png', ...imageManifest.vertical },
   wristSeam: { name: 'warmup-detail-wrist-seam', fallback: 'jpg', ...imageManifest.crops['wrist-seam'] },
+  fastening: { name: 'warmup-detail-fastening', fallback: 'jpg', ...imageManifest.crops.fastening },
   crop: {
     fleece: { name: 'warmup-detail-fleece', fallback: 'jpg', ...imageManifest.crops.fleece },
     strap: { name: 'warmup-detail-strap', fallback: 'jpg', ...imageManifest.crops.strap },
@@ -28,6 +29,8 @@ export const images = {
   logo: imageManifest.logo,
   hotspots: imageManifest.hotspots,
   hotspotsVertical: imageManifest.hotspotsVertical,
+  boxes: imageManifest.boxes,
+  boxesVertical: imageManifest.boxesVertical,
 } as const;
 
 export type ImageSet = {

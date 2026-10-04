@@ -74,6 +74,14 @@ def defringe(img: np.ndarray, alpha: np.ndarray, mask: np.ndarray) -> np.ndarray
     a = alpha[..., None]
     fg = (img - (1 - a) * bgc) / np.maximum(a, 0.08)
     fg = np.clip(fg, 0, 255)
+    # Un-premultiplying amplifies noise where alpha is small; on the bright
+    # fleece that produced a thin white rim. Keep edge colours within a
+    # narrow range of the nearby interior colour instead.
+    inner = ndi.binary_erosion(mask, iterations=4).astype(np.float32)
+    num = cv2.GaussianBlur(img * inner[..., None], (0, 0), 5)
+    den = cv2.GaussianBlur(inner, (0, 0), 5)[..., None]
+    interior = num / np.maximum(den, 1e-3)
+    fg = np.clip(fg, interior - 22.0, interior + 3.0)
     edge = (alpha > 0.002) & (alpha < 0.995)
     out = img.copy()
     out[edge] = fg[edge]

@@ -12,6 +12,7 @@ export function Hero() {
           {hero.title}
         </h1>
         <div className={styles.copy}>
+          <p className={styles.descriptor}>{hero.descriptor}</p>
           <p className={styles.lead}>{hero.lead}</p>
           <div className={styles.actions}>
             <ButtonLink href={hero.primary.href}>{hero.primary.label}</ButtonLink>
@@ -23,35 +24,35 @@ export function Hero() {
       </div>
 
       <figure className={styles.figure} aria-labelledby="hero-caption">
-        <div className={styles.product}>
+        <div className={styles.stage}>
           <Picture
             image={images.flatlay}
             alt={alts.sleeve}
-            sizes="(max-width: 1279px) calc(100vw - 40px), calc(50vw + 600px)"
+            sizes="(max-width: 599px) min(76vw, 300px), (max-width: 1279px) calc(100vw - 64px), 1240px"
             priority
             art={[
               {
                 media: '(max-width: 599px)',
                 image: images.vertical,
-                sizes: 'min(80vw, 320px)',
+                sizes: 'min(76vw, 300px)',
               },
             ]}
+            className={styles.picture}
             imgClassName={styles.img}
           />
         </div>
-        <div className={`container ${styles.below}`}>
-          <p className={styles.body}>{hero.body}</p>
-          <figcaption id="hero-caption" className={styles.caption}>
-            <span className={styles.tick} aria-hidden="true" />
-            {captions.proposed}
-          </figcaption>
-        </div>
+        <figcaption id="hero-caption" className={styles.caption}>
+          <span className={styles.tick} aria-hidden="true" />
+          {captions.proposed}
+        </figcaption>
       </figure>
 
       <div className="container">
         <ul className={styles.facts} aria-label="At a glance">
-          {hero.facts.map((f) => (
-            <li key={f}>{f}</li>
+          {hero.facts.map((f, i) => (
+            <li key={f} data-warm={i === hero.facts.length - 1 ? 'true' : undefined}>
+              {f}
+            </li>
           ))}
         </ul>
       </div>

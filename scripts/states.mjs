@@ -3,7 +3,8 @@ import { chromium } from 'playwright';
 import path from 'node:path';
 import { launchOptions, startServer } from './shots.mjs';
 
-const out = (n) => path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'docs', 'screenshots', `state-${n}.png`);
+const dir = process.env.SHOTS_DIR || path.join('docs', 'screenshots');
+const out = (n) => path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', dir, `state-${n}.png`);
 const server = await startServer();
 const browser = await chromium.launch(launchOptions());
 try {
@@ -31,6 +32,15 @@ try {
   await page.mouse.move(5, 5);
   await page.waitForTimeout(400);
   await fig.screenshot({ path: out('hotspot-strap-active') });
+
+  const refs = page.locator('#details details');
+  await refs.locator('summary').click();
+  await page.waitForTimeout(400);
+  await refs.screenshot({ path: out('prototype-references-open') });
+  const cite = page.locator('#research li').first();
+  await cite.locator('summary').click();
+  await page.waitForTimeout(300);
+  await cite.screenshot({ path: out('research-details-open') });
 
   await page.locator('#faqs button[aria-expanded]').nth(1).click();
   await page.waitForTimeout(400);

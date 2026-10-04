@@ -8,8 +8,10 @@ import { Research } from './sections/Research';
 import { Faq } from './sections/Faq';
 import { Contact } from './sections/Contact';
 import { Footer } from './sections/Footer';
+import { useScrollReveal } from './components/useScrollReveal';
 
 export function App() {
+  useScrollReveal();
   return (
     <>
       <a className="skip-link" href="#main">

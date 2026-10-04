@@ -1,7 +1,6 @@
 .section {
-  padding-block: clamp(64px, 3rem + 3vw, 96px);
-  background: var(--bg);
-  border-top: 1px solid var(--line);
+  padding-block: clamp(64px, 3rem + 3.5vw, 104px);
+  background: var(--white);
 }
 
 .grid {
@@ -12,9 +11,18 @@
   align-items: start;
 }
 
-.title {
+.head {
   grid-column: 1 / span 4;
+}
+
+.title {
   max-width: 9em;
+}
+
+.sub {
+  margin-top: 16px;
+  color: var(--ink-2);
+  max-width: 30ch;
 }
 
 .list {
@@ -22,7 +30,7 @@
 }
 
 @media (max-width: 1023px) {
-  .title,
+  .head,
   .list {
     grid-column: 1 / -1;
   }

@@ -8,11 +8,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const outDir = path.join(root, 'docs', 'screenshots');
+// SHOTS_DIR lets before/after captures go to separate folders
+const outDir = path.resolve(root, process.env.SHOTS_DIR || path.join('docs', 'screenshots'));
 fs.mkdirSync(outDir, { recursive: true });
 
 export const viewports = [
-  { name: 'desktop-1440', width: 1440, height: 1000 },
+  { name: 'desktop-1440', width: 1440, height: 900 },
   { name: 'desktop-1280', width: 1280, height: 800 },
   { name: 'tablet-1024', width: 1024, height: 768 },
   { name: 'tablet-768', width: 768, height: 1024 },
@@ -71,6 +72,12 @@ export async function settle(page) {
   }
   const left = await pending();
   if (left.length) console.warn('images still loading:', left);
+  // full-page captures: make sure every scroll-reveal element is shown
+  await page.evaluate(() => document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('is-revealed')));
+  // wait until every rendered image is decoded, not just downloaded
+  await page.evaluate(() =>
+    Promise.all(Array.from(document.images).filter((i) => i.getClientRects().length > 0).map((i) => i.decode().catch(() => {}))),
+  );
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(900);
 }

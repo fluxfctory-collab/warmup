@@ -10,7 +10,8 @@ import styles from './Details.module.css';
  * ordered along the sleeve from upper arm to hand. On desktop, notes 1–2 sit
  * above the image and 3–4 below, so leader lines rise or drop vertically and
  * never cross each other or text. Everything is visible without interaction;
- * dots and note titles are buttons with aria-pressed.
+ * dots and note titles are buttons with aria-pressed, and the selected
+ * feature gets a subtle outline on the image.
  */
 export function Details() {
   const [pressed, setPressed] = useState<FeatureKey | null>(null);
@@ -18,32 +19,47 @@ export function Details() {
   const shown = hovered ?? pressed;
   const toggle = (k: FeatureKey) => setPressed((cur) => (cur === k ? null : k));
 
-  const dots = (vertical: boolean) =>
-    anatomy.map((f, i) => {
-      const p = (vertical ? images.hotspotsVertical : images.hotspots)[f.key];
-      return (
-        <button
-          key={f.key}
-          type="button"
-          className={styles.dot}
-          data-key={f.key}
-          aria-pressed={pressed === f.key}
-          aria-label={`${i + 1}: ${f.title}`}
-          style={{ left: `${p.x}%`, top: `${p.y}%` }}
-          onClick={() => toggle(f.key)}
-          onMouseEnter={() => setHovered(f.key)}
-          onMouseLeave={() => setHovered(null)}
-        >
-          <span className={styles.marker} aria-hidden="true">
-            {i + 1}
-          </span>
-        </button>
-      );
-    });
+  const overlay = (vertical: boolean) => (
+    <>
+      {anatomy.map((f) => {
+        const b = (vertical ? images.boxesVertical : images.boxes)[f.key];
+        return (
+          <span
+            key={`o-${f.key}`}
+            aria-hidden="true"
+            className={styles.outline}
+            data-key={f.key}
+            style={{ left: `${b.x}%`, top: `${b.y}%`, width: `${b.w}%`, height: `${b.h}%` }}
+          />
+        );
+      })}
+      {anatomy.map((f, i) => {
+        const p = (vertical ? images.hotspotsVertical : images.hotspots)[f.key];
+        return (
+          <button
+            key={f.key}
+            type="button"
+            className={styles.dot}
+            data-key={f.key}
+            aria-pressed={pressed === f.key}
+            aria-label={`${i + 1}: ${f.title}`}
+            style={{ left: `${p.x}%`, top: `${p.y}%` }}
+            onClick={() => toggle(f.key)}
+            onMouseEnter={() => setHovered(f.key)}
+            onMouseLeave={() => setHovered(null)}
+          >
+            <span className={styles.marker} aria-hidden="true">
+              {i + 1}
+            </span>
+          </button>
+        );
+      })}
+    </>
+  );
 
   return (
     <section id="details" className={styles.section} aria-labelledby="details-title">
-      <div className={`container ${styles.head}`}>
+      <div className={`container ${styles.head}`} data-reveal>
         <h2 id="details-title">{details.title}</h2>
         <p className={styles.intro}>{details.intro}</p>
       </div>
@@ -71,11 +87,11 @@ export function Details() {
               />
             );
           })}
-          {dots(false)}
+          {overlay(false)}
         </div>
         <div className={`${styles.stage} ${styles.stageV}`}>
           <Picture image={images.vertical} alt={alts.sleeve} sizes="220px" imgClassName={styles.img} />
-          {dots(true)}
+          {overlay(true)}
         </div>
 
         <figcaption className={styles.caption}>
@@ -104,27 +120,36 @@ export function Details() {
           ))}
         </ol>
 
-        <p className={styles.useNote}>{details.useNote}</p>
+        <p className={styles.useNote}>
+          <span className={styles.useLabel}>{details.useNote.label}</span>
+          {details.useNote.text}
+        </p>
       </figure>
 
-      <div className={`container ${styles.reference}`}>
-        <div className={styles.refText}>
-          <h3>{details.reference.title}</h3>
-          <p>{details.reference.text}</p>
-        </div>
-        <figure className={styles.refFlat}>
-          <Picture
-            image={images.refFlatlay}
-            alt={alts.refFlatlay}
-            sizes="(max-width: 767px) calc(100vw - 40px), 560px"
-            imgClassName={styles.refImg}
-          />
-          <figcaption>{captions.refFlatlay}</figcaption>
-        </figure>
-        <figure className={styles.refWorn}>
-          <Picture image={images.refWorn} alt={alts.refWorn} sizes="112px" imgClassName={styles.refImg} />
-          <figcaption>{captions.refWorn}</figcaption>
-        </figure>
+      <div className="container">
+        <details className={styles.reference}>
+          <summary className={styles.refSummary}>
+            <span className={styles.refTitle}>{details.reference.title}</span>
+            <span className={styles.refHint}>{details.reference.summary}</span>
+            <span className={styles.refIcon} aria-hidden="true" />
+          </summary>
+          <div className={styles.refBody}>
+            <p className={styles.refText}>{details.reference.text}</p>
+            <figure className={styles.refFlat}>
+              <Picture
+                image={images.refFlatlay}
+                alt={alts.refFlatlay}
+                sizes="(max-width: 767px) calc(100vw - 40px), 520px"
+                imgClassName={styles.refImg}
+              />
+              <figcaption>{captions.refFlatlay}</figcaption>
+            </figure>
+            <figure className={styles.refWorn}>
+              <Picture image={images.refWorn} alt={alts.refWorn} sizes="84px" imgClassName={styles.refImg} />
+              <figcaption>{captions.refWorn}</figcaption>
+            </figure>
+          </div>
+        </details>
       </div>
     </section>
   );

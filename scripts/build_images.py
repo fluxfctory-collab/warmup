@@ -33,8 +33,20 @@ HOTSPOTS = {
     "mitten": (3565, 905),   # finger chamber of the mitten
 }
 
+# Feature outlines (left, top, right, bottom) in composite coordinates, used
+# to draw a subtle outline around the selected feature in the anatomy view
+FEATURE_BOXES = {
+    "strap": (290, 320, 915, 925),
+    "pouch": (835, 470, 1520, 1215),
+    "fleece": (1600, 500, 2920, 1340),
+    "mitten": (2915, 610, 3795, 1395),
+}
+
 # Detail crops (left, top, right, bottom) in composite coordinates
 CROPS = {
+    # real-photo detail: cuff rib + hook patch, strap with hook-and-loop strip,
+    # pouch with its bound slot (no mitten pixels)
+    "fastening": ((360, 420, 1160, 1340), [480, 800]),
     "fleece": ((2050, 900, 2690, 1380), [320, 640]),
     "strap": ((210, 300, 930, 840), [320, 640]),
     "pouch": ((760, 470, 1480, 1010), [320, 640]),
@@ -48,6 +60,8 @@ def review_crops(rgb, a):
     """100% and 200% crops of the composite for visual inspection."""
     img = export.flatten_on(export.to_image(rgb, a), (247, 249, 252))
     img.crop((2700, 450, 4034, 1550)).save(DOCS_PIPE / "mitten-100.jpg", quality=90)
+    # bottom fleece edge at 200%: check for an extraction rim / halo
+    img.crop((1700, 1120, 2300, 1320)).resize((1200, 400), Image.LANCZOS).save(DOCS_PIPE / "fleece-edge-200.jpg", quality=90)
     img.crop((3450, 700, 3850, 1100)).resize((800, 800), Image.LANCZOS).save(DOCS_PIPE / "mitten-tip-200.jpg", quality=90)
     img.crop((3250, 1050, 3750, 1450)).resize((1000, 800), Image.LANCZOS).save(DOCS_PIPE / "mitten-thumb-200.jpg", quality=90)
     dark = export.flatten_on(export.to_image(rgb, a), (16, 36, 70))
@@ -63,7 +77,7 @@ def main():
     review_crops(rgb, a)
     manifest = {"mitten": info}
     print("5    product exports")
-    hero, _ = export.export_product(rgb, a, manifest, HOTSPOTS)
+    hero, _ = export.export_product(rgb, a, manifest, HOTSPOTS, FEATURE_BOXES)
     print("6    crops, references, logo, favicons, OG")
     export.export_crops(rgb, a, manifest, CROPS, CROP_BG)
     export.export_references(manifest)
