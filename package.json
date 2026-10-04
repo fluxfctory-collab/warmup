@@ -6,7 +6,7 @@
   "description": "Informational single-page website for the WARMUP Vein Enhancer Sleeve.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir .cache/ssr --emptyOutDir && node scripts/prerender.mjs",
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc -b",
     "images": "python3 scripts/build_images.py",

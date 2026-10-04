@@ -1,0 +1,69 @@
+/* WARMUP design tokens. See docs/DESIGN_PLAN.md §2–4. */
+:root {
+  /* colour: cool neutrals carry the page, the logo's blue carries action,
+     coral (the logo's warm end) is rare and never small text */
+  --white: #ffffff;
+  --bg: #f7f9fc;
+  --surface-blue: #edf2fb;
+  --surface-warm: #fff4ef;
+  --ink: #102446;
+  --ink-2: #526078;
+  --line: #dce3ee;
+  --line-strong: #c3cddd;
+  --blue: #1f38ac;
+  --blue-deep: #0f31af;
+  --blue-tint: rgba(31, 56, 172, 0.14);
+  --plum: #4a3488;
+  --coral: #e44733; /* non-text only */
+  --coral-text: #c4361f; /* coral as text or under white text */
+  --coral-tint: rgba(228, 71, 51, 0.16);
+  --fleece: #f1ece3;
+  --knit: #3e434b;
+
+  /* type */
+  --font: 'Archivo Variable', 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --fs-h1: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem);
+  --fs-h2: clamp(1.75rem, 1.1rem + 2vw, 2.75rem);
+  --fs-h3: 1.3125rem;
+  --fs-lead: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.875rem;
+  --wdth-display: 116%;
+  --wdth-h2: 114%;
+  --wdth-h3: 108%;
+
+  /* layout */
+  --container: 1200px;
+  --gutter: 24px;
+  --pad: 64px;
+  --header-h: 80px;
+
+  /* shape */
+  --r-control: 8px;
+  --r-frame: 16px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 0.8, 0.26, 1);
+  --t-fast: 160ms;
+  --t-mid: 220ms;
+}
+
+@media (max-width: 1279px) {
+  :root {
+    --pad: 40px;
+  }
+}
+
+@media (max-width: 599px) {
+  :root {
+    --gutter: 16px;
+    --pad: 20px;
+    --header-h: 76px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --fs-body: 1.125rem;
+  }
+}

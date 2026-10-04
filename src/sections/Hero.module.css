@@ -1,0 +1,205 @@
+/* Hero, Option 2 (stacked): headline + lead, then the sleeve running almost
+   the full viewport width, upper-arm end left, mitten right. */
+.hero {
+  background: var(--surface-blue);
+  padding-top: clamp(32px, 2rem + 2vw, 64px);
+}
+
+.copyGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 20px;
+  align-items: end;
+}
+
+.title {
+  grid-column: 1 / span 7;
+  max-width: 11.5em;
+  animation: wu-rise 520ms var(--ease-out) both;
+}
+
+.copy {
+  grid-column: 8 / -1;
+  padding-bottom: 4px;
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  font-weight: 450;
+  line-height: 1.45;
+  color: var(--ink);
+  max-width: 34ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  margin-top: 20px;
+}
+
+.figure {
+  margin: clamp(16px, 0.5rem + 1.5vw, 32px) 0 0;
+}
+
+/* the product runs from the content edge to the viewport edge */
+.product {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--pad), 1fr)
+    [content-start] min(100% - 2 * var(--pad), var(--container))
+    [content-end] minmax(var(--pad), 1fr)
+    [full-end];
+}
+
+.product > picture {
+  grid-column: content-start / full-end;
+  /* the export carries ~1.3% transparent margin + shadow, so pulling it
+     slightly left keeps the cuff on the content edge */
+  margin-left: -1.2%;
+  margin-right: 8px;
+  animation: wu-settle 620ms var(--ease-out) 120ms both;
+}
+
+.img {
+  width: 100%;
+  height: auto;
+}
+
+.below {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 12px;
+  align-items: start;
+  margin-top: 4px;
+}
+
+.body {
+  grid-column: 1 / span 6;
+  color: var(--ink);
+  max-width: 46ch;
+}
+
+.caption {
+  grid-column: 8 / -1;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-self: end;
+  max-width: 36ch;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+/* the one warm accent in the hero: a short tick pointing to the mitten */
+.tick {
+  flex: none;
+  width: 20px;
+  height: 2px;
+  background: var(--coral);
+  border-radius: 1px;
+  transform: translateY(-0.3em);
+}
+
+.facts {
+  display: flex;
+  margin: clamp(28px, 1rem + 2vw, 48px) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+}
+
+.facts li {
+  flex: 1 1 0;
+  padding: 18px 20px 22px;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 580;
+  font-stretch: 106%;
+  line-height: 1.3;
+}
+
+.facts li:first-child {
+  padding-left: 0;
+}
+
+.facts li + li {
+  border-left: 1px solid var(--line-strong);
+}
+
+@keyframes wu-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes wu-settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* tablet: copy stacks, product spans the content width + right gutter */
+@media (max-width: 1023px) {
+  .title {
+    grid-column: 1 / -1;
+  }
+  .copy {
+    grid-column: 1 / span 10;
+  }
+  .body {
+    grid-column: 1 / span 7;
+  }
+  .caption {
+    grid-column: 8 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .copy,
+  .body,
+  .caption {
+    grid-column: 1 / -1;
+  }
+  .caption {
+    justify-self: start;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .facts li {
+    padding: 16px 16px 18px 0;
+  }
+  .facts li:nth-child(odd) {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .facts li:nth-child(even) {
+    padding-left: 16px;
+  }
+  .facts li:nth-child(n + 3) {
+    border-top: 1px solid var(--line-strong);
+  }
+}
+
+/* mobile: the vertical art-directed visual, cuff at top, mitten at bottom */
+@media (max-width: 599px) {
+  .product {
+    display: flex;
+    justify-content: center;
+  }
+  .product > picture {
+    width: min(80vw, 320px);
+    margin: 0;
+  }
+  .below {
+    margin-top: 8px;
+  }
+}

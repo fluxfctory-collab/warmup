@@ -46,7 +46,7 @@ export const imageManifest = {
       "y": 53.8
     },
     "mitten": {
-      "x": 93.38,
+      "x": 92.71,
       "y": 51.9
     }
   },
@@ -79,7 +79,7 @@ export const imageManifest = {
     },
     "mitten": {
       "x": 44.88,
-      "y": 92.39
+      "y": 91.73
     }
   },
   "crops": {
@@ -141,15 +141,15 @@ export const imageManifest = {
     },
     "wrist-seam": {
       "w": 680,
-      "h": 850,
+      "h": 550,
       "sizes": [
         {
           "w": 480,
-          "h": 600
+          "h": 388
         },
         {
           "w": 680,
-          "h": 850
+          "h": 550
         }
       ]
     }

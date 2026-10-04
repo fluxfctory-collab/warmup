@@ -30,7 +30,7 @@ HOTSPOTS = {
     "strap": (600, 650),     # charcoal strap with the white hook-and-loop strip
     "pouch": (1250, 760),    # patch pouch, right of its bound slot
     "fleece": (2350, 930),   # forearm fleece
-    "mitten": (3590, 905),   # finger chamber of the mitten
+    "mitten": (3565, 905),   # finger chamber of the mitten
 }
 
 # Detail crops (left, top, right, bottom) in composite coordinates
@@ -39,7 +39,7 @@ CROPS = {
     "strap": ((210, 300, 930, 840), [320, 640]),
     "pouch": ((760, 470, 1480, 1010), [320, 640]),
     "mitten": ((2860, 560, 4020, 1430), [320, 640]),
-    "wrist-seam": ((2560, 500, 3240, 1350), [480, 680]),
+    "wrist-seam": ((2560, 640, 3240, 1190), [480, 680]),
 }
 CROP_BG = (237, 242, 251)  # --surface-blue
 

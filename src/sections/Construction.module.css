@@ -1,0 +1,105 @@
+/* A spec-sheet list, not a card grid: hairline rows with real product crops. */
+.section {
+  padding-block: clamp(72px, 3rem + 4vw, 112px);
+  background: var(--white);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: start;
+}
+
+.side {
+  grid-column: 1 / span 4;
+  position: sticky;
+  top: calc(var(--header-h) + 40px);
+}
+
+.intro {
+  margin-top: 20px;
+  color: var(--ink-2);
+  max-width: 30ch;
+}
+
+.rows {
+  grid-column: 6 / -1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 176px minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+  padding-block: 28px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.thumb {
+  display: block;
+}
+
+.thumbImg {
+  width: 176px;
+  height: 132px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.rowTitle {
+  position: relative;
+  font-size: 1.25rem;
+}
+
+.rowText p {
+  margin-top: 8px;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+
+/* the warm end of the list */
+.row[data-key='mitten'] .rowTitle::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -14px;
+  width: 20px;
+  height: 2px;
+  background: var(--coral);
+  border-radius: 1px;
+}
+
+@media (max-width: 1023px) {
+  .side {
+    grid-column: 1 / -1;
+    position: static;
+    margin-bottom: 40px;
+  }
+  .rows {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 599px) {
+  .row {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    padding-block: 22px;
+  }
+  .thumbImg {
+    width: 112px;
+    height: 112px;
+  }
+  .rowTitle {
+    font-size: 1.125rem;
+  }
+  .rowText p {
+    font-size: 0.9375rem;
+  }
+}

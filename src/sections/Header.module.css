@@ -1,0 +1,197 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--white);
+  border-bottom: 1px solid transparent;
+  transition:
+    border-color var(--t-mid) ease,
+    box-shadow var(--t-mid) ease;
+}
+
+.header[data-scrolled='true'] {
+  border-bottom-color: var(--line);
+  box-shadow: 0 10px 24px -20px rgba(16, 36, 70, 0.45);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: var(--header-h);
+}
+
+/* clear space around the logo: >= the "UP" badge corner radius on all sides */
+.logoLink {
+  display: block;
+  flex: none;
+  padding: 10px 0;
+  border-radius: 4px;
+}
+
+.logo img {
+  width: 232px;
+  height: auto;
+}
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.links {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  color: var(--ink);
+  font-size: 0.9875rem;
+  font-weight: 560;
+  font-stretch: 104%;
+  text-decoration: none;
+  border-radius: var(--r-control);
+}
+
+.link:hover {
+  color: var(--blue);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.4em;
+}
+
+.menuButton {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 4px 0 14px;
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menuLabel {
+  min-width: 3.2em;
+  text-align: left;
+}
+
+.menuIcon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.menuIcon span {
+  position: absolute;
+  left: 10px;
+  width: 16px;
+  height: 1.5px;
+  background: var(--ink);
+  border-radius: 1px;
+  transition:
+    transform var(--t-mid) var(--ease-out),
+    top var(--t-mid) var(--ease-out);
+}
+
+.menuIcon span:first-child {
+  top: 14px;
+}
+
+.menuIcon span:last-child {
+  top: 21px;
+}
+
+.menuIcon[data-open='true'] span:first-child {
+  top: 17.5px;
+  transform: rotate(45deg);
+}
+
+.menuIcon[data-open='true'] span:last-child {
+  top: 17.5px;
+  transform: rotate(-45deg);
+}
+
+.panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: calc(100dvh - var(--header-h));
+  overflow-y: auto;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  animation: panel-in var(--t-mid) var(--ease-out);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.panelLinks {
+  margin: 8px 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.panelLinks li + li {
+  border-top: 1px solid var(--line);
+}
+
+.panelLink {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  color: var(--ink);
+  font-size: 1.375rem;
+  font-weight: 680;
+  font-stretch: 110%;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.panelLink:hover {
+  color: var(--blue);
+}
+
+.panelCta {
+  width: 100%;
+}
+
+@media (max-width: 959px) {
+  .desktopNav {
+    display: none;
+  }
+  .menuButton {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 599px) {
+  .logo img {
+    width: 176px;
+  }
+  .logoLink {
+    padding: 8px 0;
+  }
+}

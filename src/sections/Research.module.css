@@ -1,0 +1,116 @@
+/* An editorial reference list, not cards. */
+.section {
+  padding-block: clamp(72px, 3rem + 4vw, 112px);
+  background: var(--white);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 48px;
+}
+
+.head {
+  grid-column: 1 / span 7;
+}
+
+/* visually distinct scope note: the page's single plum rule */
+.scope {
+  margin-top: 24px;
+  padding: 14px 0 14px 18px;
+  border-left: 3px solid var(--plum);
+  color: var(--ink);
+  font-weight: 540;
+  max-width: 48ch;
+}
+
+.list {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ink);
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding-block: 32px 36px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.year {
+  grid-column: 1 / span 2;
+  color: var(--ink);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-stretch: 112%;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  grid-column: 3 / span 9;
+}
+
+.title {
+  font-size: 1.1875rem;
+  font-weight: 640;
+  font-stretch: 104%;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  max-width: 56ch;
+}
+
+.meta {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.journal {
+  font-style: italic;
+}
+
+.summary {
+  margin-top: 14px;
+  max-width: 64ch;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 1023px) {
+  .head {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .year {
+    grid-column: 1 / -1;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+  .body {
+    grid-column: 1 / -1;
+  }
+}
