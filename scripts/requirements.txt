@@ -1,0 +1,8 @@
+# Python dependencies for scripts/build_images.py (npm run images)
+pillow>=11.3      # needs AVIF support (bundled in the official wheels)
+numpy>=2.0
+opencv-python-headless>=4.10
+scipy>=1.13
+fonttools>=4.50   # converts the self-hosted Archivo woff2 for the OG card
+brotli>=1.1
+# system tool: pdftocairo (poppler-utils), used for the SVG favicon
