@@ -152,7 +152,7 @@
 
 .noteButton {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   width: 100%;
   min-height: 44px;
@@ -187,6 +187,7 @@
 }
 
 .noteTitle {
+  padding-top: 3px;
   color: var(--ink);
   font-size: 1.0625rem;
   font-weight: 660;
@@ -219,6 +220,14 @@
   border: 0;
   border-radius: 12px;
   cursor: pointer;
+}
+
+/* focus must read on cream fleece and on charcoal knit: white + blue rings */
+.dot:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 1px var(--white), inset 0 0 0 2px var(--white);
+  border-radius: 14px;
 }
 
 /* a rounded square, echoing the logo's "UP" badge */
@@ -442,7 +451,53 @@
   }
 }
 
-/* ---- mobile / small tablet: image first, numbered list below ----------- */
+/* ---- tablet: image with dots, caption, then a 2 × 2 numbered list ------- */
+@media (max-width: 1023px) {
+  .anatomy {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    row-gap: 0;
+  }
+  .stageH {
+    grid-row: 1;
+  }
+  .caption {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: start;
+    margin-top: 12px;
+    max-width: none;
+  }
+  .notes {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    column-gap: var(--gutter);
+    margin-top: 32px;
+    pointer-events: auto;
+  }
+  .note:nth-child(n) {
+    grid-row: auto;
+    grid-column: auto;
+    align-self: stretch;
+    padding: 16px 0 20px;
+    border-width: 1px 0 0;
+  }
+  .useNote {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line-strong);
+    max-width: none;
+  }
+  .leader {
+    display: none;
+  }
+}
+
+/* ---- mobile: vertical image first, numbered list below ----------------- */
 @media (max-width: 767px) {
   .intro {
     grid-column: 1 / -1;
@@ -486,6 +541,7 @@
     order: 4;
     margin-top: 20px;
     padding-top: 0;
+    border-top: 0;
   }
   .leader {
     display: none;

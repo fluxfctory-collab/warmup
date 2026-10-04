@@ -1,6 +1,6 @@
 # Design plan
 
-Phase 2 output. QA scores are at the end (§9) and are filled in during Phase 5.
+Phase 2 output. QA scores and the iteration log are at the end (§9).
 
 ## 1. Idea in one line
 
@@ -33,11 +33,13 @@ Boldness is spent once, on a very large hero product. Everything else stays quie
 
 Every text/background pair is checked by axe in QA, plus by hand for the pairs axe cannot see (text over images: none).
 
-**Proportion.** About 75% neutral (bg/white/blue surface), 20% ink and blue, under 5% coral. Coral appears in exactly four places:
-- the mitten hotspot;
-- the mitten row marker in Construction;
-- the tick on the hero caption that points at the mitten;
-- the warm contact section's submit hover rule.
+**Proportion.** About 75% neutral (bg/white/blue surface), 20% ink and blue, under 5% coral. As built, coral appears only as:
+- the mitten hotspot, its leader line and its note number;
+- the short tick before each "proposed design visualization" caption (hero and anatomy);
+- the tick above the mitten row in Construction;
+- `--coral-text` for form error messages, which is functional.
+
+Coral is never used for focus.
 
 **Logo sizing.** In the logo the descriptor's cap height is 9.6% of the logo height, which gives:
 
@@ -187,7 +189,7 @@ The pipeline is `scripts/build_images.py`, run with `npm run images`. It reads o
 6. **Shadow.** Contact shadow from the final alpha (tight 0.20 + ambient 0.08, offset down), exported on a transparent background.
 7. **Exports.**
    - `warmup-sleeve-with-mitten-flatlay@{960,1600,2400}.{avif,webp,png}`
-   - `warmup-sleeve-with-mitten-vertical@{720,1200}.{avif,webp,png}`, from a 90° rotation with a recomputed shadow
+   - `warmup-sleeve-with-mitten-vertical@{480,720,1200}.{avif,webp,png}`, from a 90° rotation with a recomputed shadow (480 was added after Lighthouse)
    - detail crops for Product and Construction
    - prototype reference derivatives: worn photo at 280/567 px (never upscaled) and flat lay at 560/1120 px
    - logo PNG/WebP at 1×/2×/3×, favicon crops (32, 180, 512 PNG plus SVG from the vector), OG image 1200×630
@@ -195,10 +197,47 @@ The pipeline is `scripts/build_images.py`, run with `npm run images`. It reads o
 
 ## 8. Mitten geometry assumptions
 
-These are recorded again in HANDOFF.
+The values below are the ones used in `scripts/imgpipe/mitten.py` and are repeated in HANDOFF.
 
-- **Continuity.** The mitten continues from the existing charcoal rib-knit wrist section in the same knit. The existing topstitching at the fleece-to-knit seam is kept untouched.
-- **Length.** Wrist seam to fingertip is **0.35 ×** the fleece body length (cuff seam to wrist seam ≈ 2340 px), so about 820 px. The existing knit section is 658 px, so the mitten adds about 160 px plus a rounded tip. This is the top of the brief's 0.3–0.35 range, chosen because the existing knit already reaches the knuckles.
-- **Finger chamber.** One enclosed chamber. The width eases from about 590 px at the wrist section to about 545 px before rounding, then closes with a superellipse tip (p ≈ 2.3). Ribs converge toward the tip.
-- **Thumb.** A separate chamber on the **bottom** edge of the flat lay, the side opposite the strap, matching the worn photo where the thumb exits on the side away from the strap. Its base centre is at 65% of the knit length from the wrist seam. It angles 38° from the hand axis toward the fingertips, is about 340 px long and 175 px wide, and has a rounded tip. Its ribs run along its own length.
+- **Continuity.** The mitten continues from the existing charcoal rib-knit wrist section in the same knit. Pixels left of x = 3200 are untouched, which keeps the fleece-to-knit seam and its light topstitching (x ≈ 3045) original.
+- **Length.** Wrist seam to fingertip is **0.35 ×** the fleece body length. The fleece body runs from the cuff seam at x ≈ 620 to the wrist seam at x ≈ 2960, so 2340 px, which gives 819 px. The existing knit section is 658 px, so the mitten adds about 160 px. This is the top of the brief's 0.3–0.35 range, chosen because the existing knit already reaches the knuckles.
+- **Finger chamber.** One enclosed chamber. It narrows by 7.5% before the tip, then closes over the last 240 px with a superellipse (p = 2.3). Its ribs converge toward the tip by at most 1.56×. The silhouette's top and bottom edges keep the photographed knit's own waviness.
+- **Thumb.** A separate chamber on the **bottom** edge of the flat lay, the side opposite the strap, matching the worn photo where the thumb exits on the side away from the strap.
+  - It leaves the hand at **60%** of the knit section's length from the wrist seam.
+  - It is angled **38°** from the hand axis toward the fingertips.
+  - It measures about **330 px** from its base point inside the hand edge to the tip, and about **176 px** across, tapering 7%.
+  - It has a rounded tip and is joined to the hand with a filleted crotch.
+  - Its ribs run along its own length.
 - **Exclusions.** No fold-back flap, opening, zipper or removable part. The knit colour is assumed to match the existing wrist section.
+
+## 9. Visual QA (Phase 5)
+
+Screenshots are in `docs/screenshots/`: 6 viewports, first viewport plus full page, plus `state-*.png` for interactions. Automated checks are in `docs/qa-report.md` (`npm run qa`, 49/49 passing).
+
+### Scores (1–5, after iteration)
+
+| Criterion | Score | Evidence / remaining gap |
+|---|---|---|
+| Product presence | 5 | The sleeve is the dominant element at every width. At 1440×1000, 1280×800, 1024×768 and 768×1024 the whole sleeve, mitten included, sits in the first viewport. On mobile, copy comes first as specified, then the vertical sleeve; its mitten is never cropped. |
+| Truthfulness of visual | 4 | The mitten continues the photographed knit at the same scale, light and colour, and every instance carries a "proposed" caption. At 200% the re-synthesized rib is slightly more regular than the photographed one, so it scores 4, not 5. |
+| Brand fit | 5 | The palette comes from the logo's stops. Archivo semi-expanded rhymes with the wordmark. The logo is untouched, on white, and its descriptor is legible (`mobile-390-header@3x.png`). |
+| Typography | 4 | Headings are balanced with no single-word last lines. Two caption orphans and one bad hyphen break were fixed. Some body paragraphs end on two words. |
+| Composition variety | 5 | Each section has its own structure: stacked hero, editorial split, zig-zag anatomy, spec list, split columns, reference list, accordion, form card. |
+| Restraint | 4 | One motion moment and coral under 5%. The form's error colour adds a functional fifth coral use. |
+| Mobile quality | 4 | Mobile has its own art-directed vertical sleeve and vertical anatomy, a 2 × 2 facts grid and a full-height menu. The vertical hero is long (~930 px at 390 wide), which is deliberate so it reads as a scroll from arm to hand. |
+| Accuracy | 5 | Every claim maps to brief §2 or to a reference. The banned-term scan hits only the paediatric reference, "Can I buy it here? No" and "does not process orders". |
+| Accessibility | 5 | axe finds 0 violations at 1440 and 390. Lighthouse accessibility is 100. The keyboard path, menu focus trap and return, hotspot keyboard and touch use, accordion and announced form errors are all verified. |
+
+### Iteration log (what QA changed)
+
+1. Hero: the body copy moved under the product so the mitten stays above the fold at 1280×800.
+2. Caption orphan ("…Prototype / 2.4."): fixed with a non-breaking space.
+3. Anatomy notes 1–2 had ragged title baselines: notes now stretch and number badges top-align.
+4. The wrist-seam crop showed background at its edge: it was re-cropped fully inside the garment.
+5. At 768 px the four anatomy columns were cramped: tablet now uses image plus dots, then a 2 × 2 list without leader lines.
+6. "Arm-to- / hand coverage" was a bad break caused by `text-wrap: balance`: row titles now use normal wrapping.
+7. Anchors landed 88 px too low because `scroll-padding-top` and `scroll-margin-top` both applied: kept only the latter.
+8. Footer links were 38 px wide: they now have a 44 × 44 minimum.
+9. Hotspot focus ring was invisible on the charcoal knit: it is now a double ring (white inner, blue outer).
+10. "Sewn to the cuff" was inferred, not stated: changed to "attached at the cuff".
+11. Lighthouse flags: added `robots.txt` and a 480 px vertical variant.

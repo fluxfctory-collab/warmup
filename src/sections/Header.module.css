@@ -195,3 +195,8 @@
     padding: 8px 0;
   }
 }
+
+/* without JavaScript the menu cannot open; the footer carries every link */
+:global(html:not(.js)) .menuButton {
+  display: none;
+}

@@ -112,7 +112,7 @@ def export_product(rgb, a, manifest, hotspots_src):
     vert.save(CACHE / "vertical-master.png")
     manifest["vertical"] = {
         "w": vert.width, "h": vert.height,
-        "sizes": save_variants(vert, "warmup-sleeve-with-mitten-vertical", [720, 1200]),
+        "sizes": save_variants(vert, "warmup-sleeve-with-mitten-vertical", [480, 720, 1200]),
     }
     # vertical hotspot positions: rotation (x, y) -> (H - 1 - y, x) in the
     # cropped horizontal frame, then account for the vertical crop

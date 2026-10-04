@@ -53,7 +53,7 @@ export const anatomy: {
   {
     key: 'strap',
     title: 'Attached fastening strap',
-    text: 'A strap with a hook-and-loop strip is sewn to the upper-arm cuff and secures the sleeve around the arm.',
+    text: 'A strap with a hook-and-loop strip is attached at the upper-arm cuff and secures the sleeve around the arm.',
   },
   {
     key: 'pouch',

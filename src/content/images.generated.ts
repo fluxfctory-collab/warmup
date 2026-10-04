@@ -55,6 +55,10 @@ export const imageManifest = {
     "h": 3771,
     "sizes": [
       {
+        "w": 480,
+        "h": 1425
+      },
+      {
         "w": 720,
         "h": 2138
       },

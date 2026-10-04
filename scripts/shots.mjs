@@ -29,7 +29,8 @@ export function launchOptions() {
 export async function startServer() {
   if (process.env.SHOTS_URL) return { url: process.env.SHOTS_URL, stop: () => {} };
   const port = 4173;
-  const proc = spawn('npx', ['vite', 'preview', '--port', String(port), '--strictPort'], {
+  // run vite's own entry with node (not via npx) so kill() stops the server
+  const proc = spawn(process.execPath, [path.join(root, 'node_modules', 'vite', 'bin', 'vite.js'), 'preview', '--port', String(port), '--strictPort'], {
     cwd: root,
     stdio: 'ignore',
   });
