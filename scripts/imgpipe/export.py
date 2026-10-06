@@ -152,12 +152,22 @@ def export_product(rgb, a, manifest, hotspots_src, boxes_src=None):
     return hero, vert
 
 
-def export_crops(rgb, a, manifest, crops, bg_color):
-    """Detail crops (in full-res composite coordinates) flattened on bg."""
+def export_crops(rgb, a, manifest, crops, bg_color, shadowed=()):
+    """Detail crops (in full-res composite coordinates) flattened on bg.
+    Crops named in `shadowed` get the hero's contact shadow, computed on a
+    padded region so it does not fade out at the crop edges."""
     full = flatten_on(to_image(rgb, a), bg_color)
     manifest["crops"] = {}
     for name, (box, widths) in crops.items():
-        im = full.crop(box)
+        if name in shadowed:
+            l, t, r, b = box
+            p = 120
+            H, W = a.shape
+            pl, pt, pr, pb = max(l - p, 0), max(t - p, 0), min(r + p, W), min(b + p, H)
+            srgb, sa = add_contact_shadow(rgb[pt:pb, pl:pr], a[pt:pb, pl:pr], scale=1.0, down=(0, 1))
+            im = flatten_on(to_image(srgb, sa), bg_color).crop((l - pl, t - pt, r - pl, b - pt))
+        else:
+            im = full.crop(box)
         manifest["crops"][name] = {
             "w": im.width, "h": im.height,
             "sizes": save_jpeg_variants(im, f"warmup-detail-{name}", widths),
