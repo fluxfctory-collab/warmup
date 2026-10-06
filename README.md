@@ -1,6 +1,6 @@
 # WARMUP: Vein Enhancer Sleeve
 
-A single-page informational website for the WARMUP arm-and-hand warming sleeve. It offers no commerce. The page uses Vite, React and TypeScript with plain CSS (custom properties and CSS Modules). It is prerendered at build time and hydrated on the client.
+A single-page informational website for the WARMUP arm-and-hand warming sleeve. It offers no commerce. The page uses Vite, React and TypeScript with plain CSS (custom properties and CSS Modules), and GSAP (with ScrollTrigger and `@gsap/react`) for a short hero entrance, section reveals and annotation emphasis. It is prerendered at build time and hydrated on the client.
 
 ## Run it
 
@@ -12,6 +12,7 @@ npm run preview      # serve dist/ at http://localhost:4173
 npm run shots        # screenshots at 6 viewports -> docs/screenshots/ (needs a build)
 npm run qa           # axe + interaction + layout + content checks -> docs/qa-report.md
 npm run images       # rebuild every image from source-assets/ (Python, see below)
+npm run images:crops # re-export only the detail close-ups; other images stay as committed
 ```
 
 `shots` and `qa` use Playwright's Chromium. If `/opt/pw-browsers/chromium` exists they use it; otherwise run `npx playwright install chromium` once.
@@ -29,6 +30,7 @@ The image pipeline needs Python 3.10+ (`pip install -r scripts/requirements.txt`
 | `src/config/contact.ts` | Contact form endpoint. It is `null` (not connected) until the client supplies one. |
 | `src/styles/tokens.css` | Colour, type, spacing and motion tokens |
 | `src/sections/` | One component and CSS module per page section |
+| `src/motion/` | GSAP setup and motion hooks: hero entrance, scroll reveals. All motion sits in `gsap.matchMedia()` under `prefers-reduced-motion: no-preference` |
 | `src/components/` | Picture, Logo, ButtonLink, Accordion |
 | `docs/` | Asset audit, design plan, handoff, QA report, screenshots, pipeline review crops |
 

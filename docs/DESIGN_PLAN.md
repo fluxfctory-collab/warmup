@@ -241,3 +241,60 @@ Screenshots are in `docs/screenshots/`: 6 viewports, first viewport plus full pa
 9. Hotspot focus ring was invisible on the charcoal knit: it is now a double ring (white inner, blue outer).
 10. "Sewn to the cuff" was inferred, not stated: changed to "attached at the cuff".
 11. Lighthouse flags: added `robots.txt` and a 480 px vertical variant.
+
+## 10. Refinement 3: art direction, close-ups and GSAP motion
+
+### Inputs
+
+The three plugins named in the brief (`ui-ux-pro-max@ui-ux-pro-max-skill`, `agent-skills@addy-agent-skills`, `gsap-skills@gsap-skills`) were **not installed in the cloud session** that did this pass (`ListPlugins` was empty and `~/.claude/plugins` held no plugin files). Their public source repositories (`nextlevelbuilder/ui-ux-pro-max-skill` 2.13.0, `addyosmani/agent-skills`, `greensock/gsap-skills`) were cloned into a scratch directory, their `SKILL.md` files read, and the UI UX Pro Max search script (stdlib only, local CSV data) run from there. What each one changed is listed in HANDOFF §10.
+
+UI UX Pro Max `--design-system "medical device product clinical informational"` returned a generic clinic system: teal/green palette, Figtree/Noto Sans, "Trust & Authority + Conversion" with security badges, stats and booking. The skill asks for each result to be checked for fit, and these conflict with the logo's blue/red identity and with the brief (no trust badges, no commerce), so they were **not** adopted. Kept from it: the Minimalism/Swiss style family, spacious density, the reduced-motion and contrast requirements, and the pre-delivery checklist. Targeted searches that were applied: `heading line balance` (bounded measure plus `text-wrap: balance`, no forced breaks), `error near field` / `error summary` (inline errors with `aria-describedby`, focus on the first invalid field, a live count), `scroll reveal stagger` (8–16 px rise, 300–600 ms) and the quick-reference rules on transform-only animation, exit faster than entrance, and 44 px targets. Two searches (`accordion expand collapse`, `svg line draw`) returned no database match, so those parts follow the GSAP skills and the general rules instead.
+
+### Audit: the five weaknesses this pass fixes
+
+| # | Weakness (baseline, `docs/screenshots/v3/before/`) | Resolution |
+|---|---|---|
+| 1 | The hero product floated on a white-to-blue gradient wash with no defined stage. A generic four-bullet strip repeated the lead, and at 768 px the sleeve nearly touched both viewport edges. | A **product plate**: one flat neutral (`--plate`) with a softly lit centre, slightly wider than the text column. A provenance tag sits on the plate, and a thin **upper arm → hand scale** runs under the sleeve (beside it on phones) to say what the sleeve covers. The facts strip is gone. |
+| 2 | Repetitive views: Construction re-showed the strap and pouch (the "fastening" crop) already annotated in Details, using four generic line icons. The fleece, strap, pouch and mitten crops the pipeline already made went unused, so the mitten never had a close-up. | Construction now shows **four real close-ups**: strap, pouch, fleece, and the mitten as a visualization. They are numbered like the anatomy and tagged "Photograph · Prototype 2.4" or "Proposed visualization". The crops were re-cut to sit inside the garment and re-exported at sizes near their native resolution. The icons were deleted. |
+| 3 | Flat hierarchy: H1 and H2 were both very heavy and wide, every section repeated "big heading left, content right", and Clinical was a three-card row. | One display size (h1 only), with calmer and narrower h2s. Section layouts are now distinct: plate hero, editorial split, annotated diagram, sticky-head staggered close-ups (navy), two-moment split plus reuse band, research index, sticky-head FAQ, form. |
+| 4 | Research was tall and repetitive: four stacked cards, each with a sentence, a toggle and a button. The "not WARMUP" caveat was a plum-ruled paragraph that was easy to miss. | A **research index**: year, study, design, population and source columns, with the full citation and summary behind one disclosure. A bordered scope box beside the heading reads "General warming research, not WARMUP". |
+| 5 | Interactions felt default: the FAQ heading column was dead space, the form card had a heavy shadow, and the footer was sparse. Motion was a CSS fade only, with no annotation feedback. | The FAQ has a sticky head with an enquiry link, plus a blue key rule and a GSAP answer settle on open. The form is a hairline panel, with the "not connected" note beside the button. The footer adds an "About this site" column (product information only; visualizations are not photographs). GSAP motion is described below. |
+
+### Tokens changed
+
+`--bg #F6F8FB` and `--plate #EEF2F7` (also `CROP_BG` in `scripts/build_images.py`) were added, along with `--plate-hi`, `--surface-warm #FBF6F2`, `--ink-2 #4E5C74`, `--line-input`, `--navy-accent`, `--coral-on-navy`, one elevation scale (`--shadow-frame`, `--shadow-raise`, `--shadow-navy`), a 4 px space scale and the `--section-y` rhythm. The display size is `clamp(2.25rem, 1.05rem + 4.5vw, 5.25rem)`, at weight 760 and 118% width. Archivo stays as the only family: its width axis rhymes with the wide wordmark, and the Figtree/Noto Sans pairing the database suggested would have made the page look like any clinic site.
+
+Measured contrast (WCAG relative luminance):
+
+| Pair | Ratio |
+|---|---|
+| `--ink` on white / `--plate` | 15.4 / 13.7 |
+| `--ink-2` on white / `--plate` / `--surface-warm` | 6.8 / 6.0 / 6.3 |
+| `--blue` on white / `--plate` | 9.5 / 8.4 |
+| `--coral-text` on white / `--plate` | 5.4 / 4.8 |
+| `--on-navy-2` / `--navy-accent` / `--coral-on-navy` on navy | 9.6 / 8.2 / 6.3 |
+| `--coral` (marks only) on white / `--plate` | 4.0 / 3.6 (≥ 3:1 for non-text) |
+| `--line-input` (input borders) on white | 3.8 |
+
+### Motion (GSAP 3.15, ScrollTrigger, `@gsap/react`)
+
+| Moment | What moves | Rules |
+|---|---|---|
+| Hero entrance (`src/motion/useHeroIntro.ts`) | Descriptor and heading, then the lead, then the plate. The sleeve travels 32 px in the arm-to-hand direction (12 px down on phones), then the actions, then the scale line draws (scaleX, or scaleY on phones) and its labels and the caption fade in. Main content is settled by about 1.2 s and the whole sequence by about 1.9 s. | Transform and opacity only, with `clearProps` at the end. CSS hides the intro elements only when `html.js` is set and motion is allowed, so there is no flash; GSAP takes over in the hydration layout effect. A 1.6 s CSS failsafe shows everything if GSAP never starts, and the intro is skipped if it would start later than 1.5 s. |
+| Section reveals (`src/motion/useReveals.ts`) | Elements marked `data-reveal` below the fold rise 18 px (12 on phones) and fade, batched with a stagger capped at about 0.3 s. | **Opacity, not `autoAlpha`**: hidden elements would leave the Tab order (found by QA, see the log). Focus moving into a waiting block reveals it at once. Blocks already scrolled past on a fast jump are restored instantly. |
+| Annotation emphasis (`Details.tsx`) | Leader lines draw out from their markers once, when the diagram enters view. Activating a feature gives its marker a single 1.14× pulse and redraws its line. | Created in `contextSafe`, one-off, never infinite. Hover stays CSS-only. |
+| Small transitions | FAQ answer settle (GSAP); disclosure bodies (CSS `wu-disclose`); FAQ key rule and question step-in (transform). | One ease family: GSAP `power3.out` matches `--ease-out`. Exits are shorter than entrances. |
+
+Everything sits in `gsap.matchMedia()` under `(prefers-reduced-motion: no-preference)`, so reduced motion gets the final state with no transforms (checked by QA). No pinning, no scrub, no scroll hijacking, no infinite loops.
+
+### Iteration log (what the screenshots and checks changed)
+
+1. The navy close-ups first rendered at about 556 CSS px from 640 px crops, which is blurry on 2× screens. Construction became a sticky heading with a legend plus a staggered grid capped near 340 px.
+2. The full-page captures showed reveals still hidden. The capture loop was cancelling its own smooth scrolls, not the site; `shots.mjs` and `qa.mjs` now step with instant scrolls.
+3. An instant jump to the bottom queued 21 reveals into one stagger chain (about 1.6 s of wait). Fixed by restoring passed blocks immediately and capping the stagger.
+4. `states.mjs` could not click a research disclosure that was still waiting to reveal. Cause: `autoAlpha` sets `visibility: hidden`, which also removes links from keyboard Tab order. Switched to opacity, added a focus reveal and a QA check that Tab reaches all 32 controls in `<main>`.
+5. At 1024 px the hero copy column was about 280 px wide (six-line lead, stacked actions) and the plate fell below the fold. The copy now spans columns 8–12 below 1280; the research scope box and contact form also get roomier columns there.
+6. At 360 px the headline broke into three lines. The display minimum is now 36 px.
+7. `gsap.matchMedia` with a conditions object runs only when a condition matches, so on a reduced-motion desktop `intro-ready` was never set. It is now set explicitly.
+8. The footer "FAQs" link was 38 px wide on phones; it is 44 px again. The FAQ answers' step-in became a transform instead of a padding transition.
+9. A pre-existing dev-only hydration error: `#root` holds only the `<!--app-html-->` comment in dev, so `hasChildNodes()` was true. It now checks `firstElementChild`.

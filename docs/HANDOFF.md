@@ -1,6 +1,6 @@
 # Handoff: WARMUP Vein Enhancer Sleeve website
 
-A finished, responsive, single-page information site with no commerce. Branch: `claude/funny-volta-539fmr`. Nothing has been deployed.
+A finished, responsive, single-page information site with no commerce. Branch: `claude/zealous-mendel-lyicqs` (refinement 3, section 10; earlier phases on `claude/funny-volta-539fmr`). Nothing has been deployed.
 
 ---
 
@@ -14,6 +14,7 @@ npm run preview    # serves dist/ at http://localhost:4173
 npm run shots      # screenshots at 6 viewports → docs/screenshots/ (SHOTS_DIR=… to redirect; run after build)
 npm run qa         # automated checks → docs/qa-report.md (run after build)
 npm run images     # regenerate all images from source-assets/ (Python)
+npm run images:crops  # re-export only the detail close-ups (section 10)
 ```
 
 - **Node.** Node 20.19+ or 22.12+. Built and tested on Node 22.22.
@@ -110,8 +111,8 @@ The composite was inspected at 100% and 200% (`docs/pipeline/mitten-100.jpg`, `m
 |---|---|---|
 | `warmup-sleeve-with-mitten-flatlay@*` (hero, anatomy, OG card) | **Proposed design visualization** (composite) | "Proposed design visualization with integrated mitten, based on Prototype 2.4." |
 | `warmup-sleeve-with-mitten-vertical@*` (mobile hero, mobile anatomy) | **Proposed design visualization** (composite, rotated) | Same |
-| `warmup-detail-mitten@*` (Construction, row 4) | **Proposed design visualization** (crop of the composite) | Row text: "Shown here as a proposed design visualization." The alt text says so too. |
-| `warmup-detail-fleece@*`, `-strap@*`, `-pouch@*`, `-wrist-seam@*` | Prototype 2.4 photo regions, **cut out and colour-corrected only**. No mitten pixels. | Wrist seam: "Prototype 2.4 detail … Colour-corrected photograph." |
+| `warmup-detail-mitten@*` (Construction, close-up 4) | **Proposed design visualization** (crop of the composite on `--plate`, with the hero's contact shadow) | Tag on the image: "Proposed visualization". The alt text starts "Proposed design visualization". |
+| `warmup-detail-fleece@*`, `-strap@*`, `-pouch@*` (Construction, close-ups 1–3), `-wrist-seam@*` (Product) | Prototype 2.4 photo regions, **wholly inside the garment, colour-corrected only**. No mitten pixels, no background. | Tag on each image: "Photograph · Prototype 2.4". The wrist-seam caption also says "Colour-corrected photograph." |
 | `prototype-2-4-flatlay-original@*` | **Untouched photo** (resized only) | "Prototype 2.4, flat lay (before mitten update)." |
 | `prototype-2-4-worn-original@*` | **Untouched photo** (resized only, never upscaled, shown about 94–101 CSS px wide; the brief allows up to 280) | "Prototype 2.4, worn (fingerless hand section, before mitten update)." |
 
@@ -206,3 +207,53 @@ Principle: "clinical precision with textile warmth". The page's facts, reference
 **New QA checks** (all passing): hero clarity at 1440×900; exactly one navy section; research shorter than 1,200 px; prototype references collapsed and keyboard-openable; research disclosure opens; nothing left hidden after scrolling; reduced motion hides nothing. axe still reports **0 violations** at 1440 and 390, with every disclosure opened during the scan.
 
 **Visual limitations.** No arm-worn photo of the mitten version exists and no image-generation tool is configured here, so the clinical section uses typography rather than a worn visual; no bedside or needle imagery was invented. The rendered mitten is still the proposed visualization from Prototype 2.4.
+
+## 10. Refinement 3: close-ups, product plate, research index, GSAP motion
+
+Full rationale, audit, tokens, motion spec and iteration log: `DESIGN_PLAN.md` §10.
+
+### What changed
+
+| Area | Change |
+|---|---|
+| Hero | The sleeve sits on a product plate (one neutral with a softly lit centre) instead of a gradient wash. A provenance tag sits on the plate, and an upper arm → hand scale line runs under it. On phones: headline, then the complete vertical sleeve with its scale beside it, then the copy, so the headline and the whole sleeve, mitten included, share the first screen at 390×844 and 360×800. The facts strip was removed. Actions are in sentence case ("Explore the sleeve", "View the research"). |
+| Construction (the one navy chapter) | Four real close-ups (strap, pouch and fleece photographs; the mitten visualization), numbered as in the anatomy and tagged by kind, in a staggered grid with a sticky heading and a two-item legend. The fastening crop and the line icons are gone. |
+| Clinical | Two moments of use split by a hairline, plus a separate same-patient reuse band. |
+| Research | An index (year, study, design, population, source) with one disclosure per study, and a bordered "General warming research, not WARMUP" scope box. The `brief` field was replaced by `design` and `population`, both taken from the existing summaries. |
+| FAQ, Contact, Footer | A sticky FAQ head with an enquiry link, a key rule and an answer settle. The form panel is a hairline with the "not connected" note beside the button (behaviour unchanged, and still no request is sent). The footer gains "On this page" and "About this site" (product information only; visualizations are not photographs) plus "Back to top". |
+| Motion | GSAP hero entrance, batched section reveals, leader-line drawing and marker emphasis, FAQ answer settle. All of it sits under `prefers-reduced-motion: no-preference`. See `DESIGN_PLAN.md` §10. |
+| Pipeline | `CROPS` were re-cut inside the garment; the mitten crop gets the contact shadow; `--crops` re-exports only the close-ups. The wrist-seam outputs from that run differed from the committed files only by encoder noise (mean 0.02/255), so the committed files were kept. |
+
+### How each installed plugin shaped the work
+
+The plugins were not available in this cloud container (see `DESIGN_PLAN.md` §10, Inputs), so their published `SKILL.md` instructions were read from source and applied by hand.
+
+- **UI UX Pro Max.** The `--design-system` result was run, checked for fit and mostly rejected (generic clinic palette, trust badges, conversion pattern). The kept parts drove the minimal Swiss style, spacious density, measured contrast for every text pair, balanced headings bounded by `max-width`, inline form errors, 44 px targets, transform/opacity-only motion and the reduced-motion requirement.
+- **Addy Osmani agent-skills.** *frontend-ui-engineering*: the anti-"AI aesthetic" table (no gradient wash, no stock card grid, one shadow scale), semantic tokens and verification at 320/768/1024/1440. *performance-optimization*: a Lighthouse baseline before adding GSAP, the same measurement after, and the image `sizes` capped near native resolution. *incremental-implementation*: build and screenshot after each slice. *browser-testing-with-devtools*: there is no DevTools MCP here, so the same checks (console, DOM state, focus, screenshots) ran through the repo's Playwright scripts. *debugging-and-error-recovery*: reproduce before fixing, which caught the harness scroll bug and the `autoAlpha` Tab-order bug.
+- **GSAP skills.** *gsap-react*: `useGSAP` with a `scope`, `contextSafe` for handler-created tweens, no GSAP during SSR. *gsap-core*: `gsap.matchMedia()` for reduced motion and breakpoints, transform aliases, `clearProps`. *gsap-timeline*: one hero timeline with the position parameter and shared defaults, instead of chained delays. *gsap-scrolltrigger*: `ScrollTrigger.batch` with `once`, triggers created top to bottom, no scrub or pin. *gsap-performance*: transform and opacity only, `will-change` not left on permanently, small staggers.
+
+### Checks actually performed (this pass)
+
+| Check | Result |
+|---|---|
+| `npm run build` (tsc, Vite 7.3, SSR, prerender) | Passes. JS 383 KB raw / 130.9 KB gzip (was 82.6 KB gzip; GSAP and ScrollTrigger add about 48 KB). CSS 10.0 KB gzip. HTML 41.9 KB. |
+| `npm run qa`, Playwright Chromium against `vite preview` | **61 / 61 passed** (`docs/qa-report.md`). Covers: no horizontal overflow and no console errors at 1440, 1280, 1024, 768, 390 and 360; axe (WCAG 2.0–2.2 A/AA plus best practice) with **0 violations** at 1440 and 390; anchors; mobile menu focus trap, Escape and focus return; hotspots by mouse, keyboard and touch; FAQ; form validation and the honest not-connected message with no POST; 44 px targets at 390; no-JS reading; hero plate and caption in the 1440×900 first screen; one navy section; close-up tags; research under 1,200 px; disclosures; reveals complete after scrolling; reduced motion with nothing hidden or transformed; the hero entrance hands back to CSS; Tab reaches all 32 controls in `<main>`, and a focused control is revealed at once. |
+| Dev mode (React StrictMode double effects) | No console errors at 1440 or 390, or under reduced motion. Nothing left hidden in a full-page capture. |
+| Reveal edge cases (scratch Playwright) | Instant jump to the bottom, load at `#contact`, wheel scrolling: every revealed block ends visible. |
+| Hero entrance frames | Sampled at about 60–2,400 ms after navigation: no flash of hidden-then-shown content; order is heading, text, product, actions, scale. |
+| Lighthouse 12, local, against `vite preview` | Mobile preset, 3 runs: **Performance 95–96**, Accessibility 100, Best Practices 100, SEO 100; LCP 2.6–2.8 s, TBT 20–30 ms, CLS 0. Baseline before this pass (2 runs): Performance 96–97, LCP 2.6 s, TBT 0–70 ms, CLS 0. Desktop preset after: 100 / 100 / 100 / 100, LCP 0.6 s. |
+| Visual review | Before/after captures at 1440, 1280, 1024, 768, 390 and 360 were opened and inspected; a second refinement pass followed (`DESIGN_PLAN.md` §10, log items 5–8). |
+| Content scan | Hits only in the paediatric reference ("children"), "Can I buy it here? No …" and the footer's "does not process orders". |
+
+### Screenshots
+
+- `docs/screenshots/v3/before/` and `after/`: first viewport and full page at 1440×900, 1280×800, 1024×768, 768×1024, 390×844 and 360×800, plus `mobile-390-header@3x.png`.
+- `after/state-*.png`: mobile menu, hotspots (mitten and strap, plus a mobile tap), prototype references open, research details open, FAQ open, form errors and form not connected.
+- `docs/screenshots/v3/compare-*.png`: side-by-side before/after at the same viewport (desktop 1440 first viewport and full page; 1024, 768 and 360 first viewport; 390 first viewport and full page).
+
+### Remaining limitations
+
+- Chromium only. No Safari, Firefox or real-device run, and no screen-reader session.
+- The mitten is still the proposed visualization from Prototype 2.4; no photograph of a mitten prototype exists.
+- Mobile LCP is about 0.1 s higher in two of three runs. The hero image now counts as LCP after the GSAP entrance (before, the logo was the LCP element because the hero image faded in by CSS). It is within run-to-run noise but not proven neutral.
+- The plugins were applied from their published sources, not from an installed plugin runtime.
