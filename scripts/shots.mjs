@@ -51,13 +51,16 @@ export async function settle(page) {
   await page.evaluate(() => {
     document.querySelectorAll('img[loading="lazy"]').forEach((i) => (i.loading = 'eager'));
   });
+  // instant jumps: the page scrolls smoothly, and rapid smooth scrollTo calls
+  // cancel each other before the GSAP scroll reveals ever fire
   await page.evaluate(async () => {
-    const step = window.innerHeight * 0.8;
+    const step = window.innerHeight * 0.5;
     for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
-      window.scrollTo(0, y);
-      await new Promise((r) => setTimeout(r, 60));
+      window.scrollTo({ top: y, behavior: 'instant' });
+      await new Promise((r) => setTimeout(r, 90));
     }
-    window.scrollTo(0, 0);
+    await new Promise((r) => setTimeout(r, 900));
+    window.scrollTo({ top: 0, behavior: 'instant' });
   });
   // every image that is rendered (not inside a display:none branch) has loaded
   const pending = () =>
@@ -72,8 +75,6 @@ export async function settle(page) {
   }
   const left = await pending();
   if (left.length) console.warn('images still loading:', left);
-  // full-page captures: make sure every scroll-reveal element is shown
-  await page.evaluate(() => document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('is-revealed')));
   // wait until every rendered image is decoded, not just downloaded
   await page.evaluate(() =>
     Promise.all(Array.from(document.images).filter((i) => i.getClientRects().length > 0).map((i) => i.decode().catch(() => {}))),
@@ -93,6 +94,9 @@ if (isMain) {
       const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: 1 });
       const page = await ctx.newPage();
       await page.goto(server.url, { waitUntil: 'networkidle' });
+      // let the GSAP hero entrance finish first
+      await page.waitForFunction(() => document.documentElement.classList.contains('intro-ready'));
+      await page.waitForTimeout(2000);
       await settle(page);
       await page.screenshot({ path: path.join(outDir, `${vp.name}-first-viewport.png`) });
       await page.screenshot({ path: path.join(outDir, `${vp.name}-full.png`), fullPage: true });

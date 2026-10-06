@@ -25,8 +25,22 @@ async function open(vp, opts = {}) {
   });
   page.on('pageerror', (e) => logs.push(`pageerror: ${e.message}`));
   await page.goto(server.url, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(400);
+  // the GSAP hero entrance (src/motion/useHeroIntro.ts) runs for ~1.9 s
+  await page.waitForFunction(() => document.documentElement.classList.contains('intro-ready'));
+  await page.waitForTimeout(opts.reducedMotion === 'reduce' ? 200 : 2000);
   return { ctx, page, logs };
+}
+
+// scroll through with instant jumps so every scroll reveal fires (the page
+// itself scrolls smoothly, which would make rapid scrollTo calls cancel)
+async function scrollThrough(page) {
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.documentElement.scrollHeight; y += 400) {
+      window.scrollTo({ top: y, behavior: 'instant' });
+      await new Promise((r) => setTimeout(r, 70));
+    }
+  });
+  await page.waitForTimeout(800);
 }
 
 try {
@@ -51,10 +65,8 @@ try {
   for (const vp of [viewports[0], viewports[4]]) {
     const { ctx, page } = await open(vp);
     await page.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((i) => (i.loading = 'eager')));
-    await page.evaluate(() => {
-      document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('is-revealed'));
-      document.querySelectorAll('details').forEach((d) => (d.open = true));
-    });
+    await scrollThrough(page);
+    await page.evaluate(() => document.querySelectorAll('details').forEach((d) => (d.open = true)));
     await page.waitForTimeout(600);
     await page.locator('#faqs button[aria-expanded]').first().click();
     await page.locator('#contact button[type="submit"]').click();
@@ -295,16 +307,20 @@ try {
       const desc = Array.from(document.querySelectorAll('#top p')).find((p) => p.textContent.trim() === 'Arm-and-hand warming sleeve');
       const ctas = Array.from(document.querySelectorAll('#top a')).map((a) => a.textContent.trim());
       const img = document.querySelector('#top picture img').getBoundingClientRect();
+      const plate = document.querySelector('#top figure').getBoundingClientRect();
+      const cap = document.getElementById('hero-caption');
       return {
         descriptorVisible: !!desc && vis(desc),
         ctas,
         ctasVisible: Array.from(document.querySelectorAll('#top a')).every(vis),
         imgBottom: Math.round(img.bottom),
         imgWidth: Math.round(img.width),
+        plateBottom: Math.round(plate.bottom),
+        captionVisible: vis(cap) && /Proposed design visualization/.test(cap.textContent),
       };
     });
-    ok('hero (1440×900): descriptor, both actions and the whole product are in the first viewport',
-      h.descriptorVisible && h.ctasVisible && h.ctas.includes('Explore the Sleeve') && h.ctas.includes('View the Research') && h.imgBottom <= 900,
+    ok('hero (1440×900): descriptor, both actions, the whole product plate and its caption are in the first viewport',
+      h.descriptorVisible && h.ctasVisible && h.ctas.includes('Explore the sleeve') && h.ctas.includes('View the research') && h.plateBottom <= 900 && h.captionVisible,
       JSON.stringify(h));
     const dark = await page.evaluate(() => {
       const lum = (c) => {
@@ -319,8 +335,17 @@ try {
       }).map((s) => s.getAttribute('aria-labelledby'));
     });
     ok('exactly one deep navy section (construction)', dark.length === 1 && dark[0] === 'construction-title', dark.join());
+    const tags = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('#construction-title ~ * li figure, section[aria-labelledby="construction-title"] li figure')).map((f) => ({
+        alt: f.querySelector('img').alt.slice(0, 40),
+        tag: f.querySelector('figcaption').textContent.trim(),
+      })),
+    );
+    ok('construction close-ups say what they are (3 photographs, the mitten a visualization)',
+      tags.length === 4 && tags.filter((t) => t.tag.startsWith('Photograph')).length === 3 && /Proposed visualization/.test(tags[3].tag) && /visualization/i.test(tags[3].alt),
+      JSON.stringify(tags.map((t) => t.tag)));
     const research = await page.evaluate(() => Math.round(document.getElementById('research').getBoundingClientRect().height));
-    ok('research section is compact by default (< 1200px tall at 1440, was 1875px)', research < 1200, `${research}px`);
+    ok('research section is compact by default (< 1200px tall at 1440; 1875px two rounds ago)', research < 1200, `${research}px`);
     const refs = await page.evaluate(() => {
       const d = document.querySelector('#details details');
       return { open: d.open, imgsVisibleClosed: Array.from(d.querySelectorAll('img')).some((i) => i.checkVisibility()) };
@@ -360,11 +385,51 @@ try {
 
     const rm = await open({ width: 1440, height: 900 }, { reducedMotion: 'reduce' });
     const rmHidden = await rm.page.evaluate(() => ({
-      ready: document.documentElement.classList.contains('reveal-ready'),
-      hidden: Array.from(document.querySelectorAll('[data-reveal]')).filter((e) => Number(getComputedStyle(e).opacity) < 0.99).length,
+      hidden: Array.from(document.querySelectorAll('[data-reveal], [data-intro], [data-intro-label]')).filter((e) => {
+        const cs = getComputedStyle(e);
+        return Number(cs.opacity) < 0.99 || cs.visibility === 'hidden';
+      }).length,
+      transformed: Array.from(document.querySelectorAll('[data-reveal], [data-intro], [data-intro-product], [data-intro-line]')).filter((e) => e.style.transform).length,
     }));
-    ok('prefers-reduced-motion: no reveal hiding at all', !rmHidden.ready && rmHidden.hidden === 0, JSON.stringify(rmHidden));
+    ok('prefers-reduced-motion: no entrance, no reveal hiding, no transforms', rmHidden.hidden === 0 && rmHidden.transformed === 0, JSON.stringify(rmHidden));
     await rm.ctx.close();
+  }
+
+  // 13. motion: the hero entrance finishes cleanly; keyboard focus never skips
+  //     content that is still waiting to be revealed
+  {
+    const { ctx, page, logs } = await open({ width: 1440, height: 900 });
+    const intro = await page.evaluate(() => ({
+      ready: document.documentElement.classList.contains('intro-ready'),
+      left: Array.from(document.querySelectorAll('[data-intro], [data-intro-label], [data-intro-product], [data-intro-line]')).filter((e) => {
+        const cs = getComputedStyle(e);
+        return Number(cs.opacity) < 0.99 || cs.visibility === 'hidden' || e.style.transform;
+      }).length,
+    }));
+    ok('hero entrance completes and hands every element back to CSS', intro.ready && intro.left === 0, JSON.stringify(intro));
+    const expected = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('main a[href], main button, main input, main textarea, main summary'))
+        .filter((e) => e.getClientRects().length && !e.closest('[hidden]') && !e.closest('details:not([open]) > :not(summary)'))
+        .map((e) => e.outerHTML.slice(0, 60)),
+    );
+    const seen = new Set();
+    let researchOpacity = null;
+    for (let i = 0; i < expected.length + 12; i++) {
+      await page.keyboard.press('Tab');
+      const cur = await page.evaluate(() => (document.activeElement && document.querySelector('main').contains(document.activeElement) ? document.activeElement.outerHTML.slice(0, 60) : null));
+      if (cur) seen.add(cur);
+      // the first control reached in the research list was still waiting to
+      // be revealed when focus arrived: it must become visible right away
+      if (researchOpacity === null && (await page.evaluate(() => !!document.activeElement?.closest('#research li[data-reveal]')))) {
+        await page.waitForTimeout(450);
+        researchOpacity = await page.evaluate(() => Number(getComputedStyle(document.activeElement.closest('[data-reveal]')).opacity));
+      }
+    }
+    const skipped = expected.filter((e) => !seen.has(e));
+    ok('Tab reaches every control in <main>, including ones not yet revealed', skipped.length === 0, skipped.length ? skipped.slice(0, 3).join(' | ') : `${expected.length} controls`);
+    ok('a control that receives focus is revealed at once', researchOpacity !== null && researchOpacity > 0.99, `opacity ${researchOpacity}`);
+    ok('no console errors during motion and keyboard use', logs.length === 0, logs.join(' | '));
+    await ctx.close();
   }
 
   // 11. content verification (brief §10): list every hit for manual review
