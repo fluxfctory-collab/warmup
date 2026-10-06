@@ -1,51 +1,41 @@
-/* Hero: headline upper-left, descriptor + copy + actions upper-right, the
-   complete sleeve beneath on a faint cool-to-warm light field, and a compact
-   feature strip. The light field is low-saturation colour only: no glow, no
-   heat-map gradient, nothing that could read as measured temperature. */
+/* Hero. Desktop: descriptor + headline left, copy + actions right, then the
+   complete sleeve on a product plate that is slightly wider than the text
+   column. The plate is one flat neutral with a softly lit centre (the way a
+   product is shot on a seamless): cream fleece reads as cream, the charcoal
+   mitten keeps its silhouette, and nothing suggests a heat map. */
 .hero {
   position: relative;
-  padding-top: clamp(24px, 0.75rem + 1.8vw, 44px);
-  background:
-    radial-gradient(ellipse 30% 40% at 88% 68%, rgba(255, 244, 239, 0.95) 0%, rgba(255, 244, 239, 0) 70%),
-    radial-gradient(ellipse 60% 34% at 40% 66%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 70%),
-    linear-gradient(180deg, var(--white) 0%, #f6f9fd 20%, var(--surface-blue) 42%, var(--surface-blue) 100%);
-  overflow: hidden;
+  padding-top: clamp(24px, 0.5rem + 2vw, 44px);
+  padding-bottom: clamp(24px, 1rem + 2vw, 48px);
+  background: var(--white);
 }
 
-.copyGrid {
+.top {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
-  row-gap: 24px;
   align-items: end;
 }
 
-.title {
+.intro {
   grid-column: 1 / span 7;
-  max-width: 11.5em;
-  animation: wu-rise 520ms var(--ease-out) both;
 }
 
-.copy {
-  grid-column: 8 / -1;
-  padding-bottom: 6px;
-  animation: wu-rise 520ms var(--ease-out) 60ms both;
-}
-
-/* the product, said plainly, right beside the emotional headline */
-.descriptor {
+/* the product, said plainly, above the headline; the small square echoes
+   the logo's "UP" badge */
+.kicker {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: clamp(14px, 0.5rem + 0.8vw, 22px);
   color: var(--blue);
-  font-size: 1.1875rem;
-  font-weight: 680;
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  font-weight: 660;
   font-stretch: 108%;
-  letter-spacing: -0.005em;
   line-height: 1.25;
 }
 
-.descriptor::before {
+.kicker::before {
   content: '';
   flex: none;
   width: 10px;
@@ -54,131 +44,178 @@
   background: var(--blue);
 }
 
+.title {
+  max-width: 8.6em;
+}
+
+.copy {
+  grid-column: 9 / -1;
+  padding-bottom: 6px;
+}
+
 .lead {
-  margin-top: 10px;
   color: var(--ink);
-  font-size: 1.125rem;
-  line-height: 1.55;
-  max-width: 40ch;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  max-width: 36ch;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 26px;
-  margin-top: 22px;
+  gap: 12px 26px;
+  margin-top: 26px;
 }
 
-/* ---- product staging ---------------------------------------------------- */
-.figure {
+/* ---- product plate --------------------------------------------------- */
+.plate {
   position: relative;
-  width: min(100% - 2 * var(--pad) + 40px, 1240px);
-  margin: clamp(8px, 0.25rem + 1vw, 20px) auto 0;
+  width: min(100% - 2 * var(--pad) + 48px, 1320px);
+  margin: clamp(24px, 0.75rem + 1.6vw, 40px) auto 0;
+  padding: clamp(24px, 0.5rem + 1.6vw, 36px) clamp(16px, 0.25rem + 2.6vw, 48px) clamp(18px, 0.5rem + 1vw, 26px);
+  border-radius: var(--r-plate);
+  background:
+    radial-gradient(58% 72% at 50% 44%, var(--plate-hi) 0%, rgba(251, 252, 254, 0) 74%),
+    var(--plate);
+  box-shadow: inset 0 0 0 1px rgba(16, 36, 70, 0.045);
 }
 
 .stage {
   position: relative;
 }
 
-.picture {
-  display: block;
-  animation: wu-settle 620ms var(--ease-out) 120ms both;
-}
-
 .img {
+  display: block;
   width: 100%;
   height: auto;
 }
 
-/* the caption tucks into the export's transparent bottom margin, under the
-   mitten end of the sleeve */
+/* the caption is a tag on the plate (desktop) or a line under it */
 .caption {
-  position: relative;
-  display: flex;
-  gap: 12px;
-  align-items: baseline;
-  width: fit-content;
-  max-width: 46ch;
-  margin: -30px 20px 0 auto;
-  color: var(--ink-2);
-  font-size: var(--fs-meta);
-  line-height: 1.45;
-}
-
-.tick {
-  flex: none;
-  width: 20px;
-  height: 2px;
-  background: var(--coral);
-  border-radius: 1px;
-  transform: translateY(-0.3em);
-}
-
-/* ---- compact feature strip -------------------------------------------- */
-.facts {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: clamp(10px, 0.25rem + 0.8vw, 18px) 0 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--line-strong);
-}
-
-.facts li {
+  position: absolute;
+  z-index: 1;
+  top: clamp(16px, 0.5rem + 0.6vw, 22px);
+  right: clamp(16px, 0.5rem + 1vw, 26px);
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 15px 16px 17px;
-  color: var(--ink);
-  font-size: 0.96875rem;
-  font-weight: 600;
-  font-stretch: 106%;
-  line-height: 1.3;
+  gap: 9px;
+  max-width: calc(100% - 48px);
+  padding: 6px 13px 6px 11px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(16, 36, 70, 0.08);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 520;
+  line-height: 1.35;
 }
 
-.facts li::before {
+.caption::before {
   content: '';
   flex: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 2.5px;
-  background: var(--blue);
-}
-
-.facts li[data-warm]::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
   background: var(--coral);
 }
 
-.facts li:first-child {
-  padding-left: 0;
+/* ---- arm-to-hand scale: a hairline under the sleeve, end to end ------- */
+/* The flat-lay export has transparent margins: the garment spans 1.33–98.42%
+   of its width and ends at 91.4% of its height (3.0% of its width above the
+   bottom), so the scale is pulled up into that margin. */
+.scale {
+  position: relative;
+  height: 30px;
+  margin: -2% 1.58% 0 1.33%;
 }
 
-.facts li + li {
-  border-left: 1px solid var(--line-strong);
+.scaleLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: rgba(78, 92, 116, 0.55);
 }
 
-@keyframes wu-rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+.scaleLine::before,
+.scaleLine::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 9px;
+  background: var(--ink-2);
+}
+
+.scaleLine::before {
+  left: 0;
+}
+
+/* the hand end is the warm end */
+.scaleLine::after {
+  right: 0;
+  width: 2px;
+  background: var(--coral);
+}
+
+.scaleLabel {
+  position: absolute;
+  top: 9px;
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 620;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.scaleLabel[data-end='arm'] {
+  left: 0;
+}
+
+.scaleLabel[data-end='hand'] {
+  right: 0;
+  color: var(--ink);
+}
+
+/* ---- small desktop: a wider copy column so the lead and both actions
+        stay compact and the whole plate fits the first screen ----------- */
+@media (max-width: 1279px) {
+  .copy {
+    grid-column: 8 / -1;
   }
 }
 
-@keyframes wu-settle {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-}
-
-/* ---- tablet: copy stacks under the headline, product full width -------- */
+/* ---- tablet: copy stacks under the headline; caption under the plate -- */
 @media (max-width: 1023px) {
-  .title {
+  .intro {
     grid-column: 1 / -1;
   }
   .copy {
     grid-column: 1 / span 10;
+    margin-top: 22px;
+  }
+  .title {
+    max-width: 10em;
+  }
+  .plate {
+    display: flex;
+    flex-direction: column;
+  }
+  .caption {
+    position: static;
+    order: 2;
+    align-self: flex-start;
+    max-width: none;
+    margin-top: 6px;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    white-space: normal;
   }
 }
 
@@ -186,48 +223,87 @@
   .copy {
     grid-column: 1 / -1;
   }
-  .facts {
-    grid-template-columns: 1fr 1fr;
-  }
-  .facts li {
-    padding: 14px 12px 16px 0;
-  }
-  .facts li:nth-child(odd) {
-    border-left: 0;
-  }
-  .facts li:nth-child(even) {
-    padding-left: 14px;
-  }
-  .facts li:nth-child(n + 3) {
-    border-top: 1px solid var(--line-strong);
-  }
-  .caption {
-    width: auto;
-    margin: 4px 0 0;
-    max-width: none;
-  }
 }
 
-/* ---- mobile: the vertical art-directed visual, cuff at top, mitten at the
-        bottom, complete and centred ---------------------------------------- */
+/* ---- phone: headline, then the complete vertical sleeve with its scale
+        beside it, then the copy. Sized by height so the whole sleeve,
+        mitten included, shares the first screen with the headline. ------ */
 @media (max-width: 599px) {
   .hero {
-    background:
-      radial-gradient(ellipse 70% 16% at 50% 82%, rgba(255, 244, 239, 0.95) 0%, rgba(255, 244, 239, 0) 70%),
-      linear-gradient(180deg, var(--white) 0%, #f6f9fd 14%, var(--surface-blue) 30%, var(--surface-blue) 100%);
+    display: flex;
+    flex-direction: column;
+    padding-top: 22px;
   }
-  .figure {
+  .top {
+    display: contents;
+  }
+  .intro {
+    order: 1;
+    margin-inline: var(--pad);
+  }
+  .kicker {
+    margin-bottom: 12px;
+  }
+  .plate {
+    order: 2;
     width: auto;
-    margin: 24px var(--pad) 0;
+    margin: 20px var(--pad) 0;
+    padding: 18px 16px 14px;
+  }
+  .copy {
+    order: 3;
+    margin: 26px var(--pad) 0;
   }
   .stage {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 92px;
+    column-gap: 14px;
     justify-content: center;
   }
-  .picture {
-    width: min(76vw, 300px);
+  .img {
+    width: auto;
+    height: clamp(380px, 100svh - 290px, 600px);
+  }
+  /* the vertical export: garment from 1.35% to 97.4% of its height */
+  .scale {
+    height: auto;
+    margin: 0;
+  }
+  .scaleLine {
+    left: 0;
+    right: auto;
+    top: 1.35%;
+    bottom: 2.65%;
+    width: 1px;
+    height: auto;
+  }
+  .scaleLine::before,
+  .scaleLine::after {
+    left: -4px;
+    right: auto;
+    width: 9px;
+    height: 1px;
+  }
+  .scaleLine::before {
+    top: 0;
+  }
+  .scaleLine::after {
+    top: auto;
+    bottom: 0;
+    height: 2px;
+  }
+  .scaleLabel[data-end] {
+    left: 14px;
+  }
+  .scaleLabel[data-end='arm'] {
+    top: calc(1.35% - 0.7em);
+  }
+  .scaleLabel[data-end='hand'] {
+    top: auto;
+    right: auto;
+    bottom: calc(2.65% - 0.7em);
   }
   .caption {
-    margin-top: 8px;
+    margin-top: 12px;
   }
 }

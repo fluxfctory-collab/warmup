@@ -61,28 +61,31 @@ h3 {
   text-wrap: balance;
 }
 
+/* one display size, then a clear step down: the h1 is the only line set at
+   display scale, h2s are calmer and slightly narrower */
 h1 {
-  font-size: var(--fs-h1);
-  font-weight: 740;
+  font-size: var(--fs-display);
+  font-weight: 760;
   font-stretch: var(--wdth-display);
-  letter-spacing: -0.025em;
-  line-height: 1.02;
+  letter-spacing: -0.032em;
+  line-height: 0.98;
 }
 
 h2 {
   font-size: var(--fs-h2);
-  font-weight: 720;
+  font-weight: 700;
   font-stretch: var(--wdth-h2);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
   line-height: 1.08;
+  max-width: 18em;
 }
 
 h3 {
   font-size: var(--fs-h3);
-  font-weight: 680;
+  font-weight: 660;
   font-stretch: var(--wdth-h3);
-  letter-spacing: -0.01em;
-  line-height: 1.25;
+  letter-spacing: -0.008em;
+  line-height: 1.28;
 }
 
 p {
@@ -110,6 +113,46 @@ a:hover {
   outline: 2px solid var(--blue);
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+/* small functional label (in-component, never an eyebrow over every h2) */
+.label {
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 640;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* provenance tag on images: says plainly what each picture is */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 9px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(16, 36, 70, 0.08);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.78125rem;
+  font-weight: 600;
+  font-stretch: 104%;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.tag::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--blue);
+}
+
+.tag[data-kind='visualization']::before {
+  background: var(--coral);
 }
 
 button {
@@ -160,17 +203,28 @@ button {
   color: var(--ink);
 }
 
-/* restrained scroll reveal: only with JS, never under reduced motion; the
-   prerendered page stays fully visible without JavaScript */
+/* Hero entrance (src/motion/useHeroIntro.ts). Only with JavaScript and only
+   when motion is allowed, the intro elements wait for GSAP so they never
+   flash in and then disappear. GSAP takes over within one frame of
+   hydrating; if it never does, the failsafe shows them after 1.6 s. Without
+   JavaScript the .js class is absent and nothing is hidden. */
 @media (prefers-reduced-motion: no-preference) {
-  .reveal-ready [data-reveal] {
-    transition:
-      opacity var(--t-reveal) var(--ease-out),
-      transform var(--t-reveal) var(--ease-out);
-    transition-delay: var(--reveal-delay, 0ms);
+  html.js:not(.intro-ready) [data-intro] {
+    visibility: hidden;
+    animation: wu-intro-failsafe 0s linear 1.6s forwards;
   }
-  .reveal-ready [data-reveal]:not(.is-revealed) {
+}
+
+@keyframes wu-intro-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
+/* disclosure bodies settle in when opened (native <details>) */
+@keyframes wu-disclose {
+  from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(-6px);
   }
 }

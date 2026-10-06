@@ -1,72 +1,109 @@
-/* Compact editorial reference list; the caveat sits beside the heading. */
+/* Research index: heading and scope box on one row, then a five-column list
+   (year · study · design · population · source) that reads like a table. */
 .section {
-  padding-block: clamp(72px, 3rem + 4.5vw, 120px);
+  padding-block: var(--section-y);
   background: var(--bg);
   border-top: 1px solid var(--line);
 }
 
-.grid {
+.head {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
-  row-gap: 40px;
-  align-items: start;
+  row-gap: 28px;
+  align-items: end;
 }
 
-.head {
-  grid-column: 1 / span 4;
-  position: sticky;
-  top: calc(var(--header-h) + 40px);
+.headText {
+  grid-column: 1 / span 7;
+}
+
+.headText h2 {
+  max-width: 14em;
 }
 
 .intro {
   margin-top: 18px;
   color: var(--ink-2);
-  max-width: 34ch;
+  max-width: 48ch;
 }
 
 /* the page's single plum rule: these studies did not test WARMUP */
 .scope {
-  margin-top: 22px;
-  padding: 12px 0 12px 16px;
+  grid-column: 9 / -1;
+  padding: 18px 20px 20px;
+  background: var(--white);
+  border: 1px solid var(--line);
   border-left: 3px solid var(--plum);
+  border-radius: 4px 12px 12px 4px;
+}
+
+.scopeLabel {
+  color: var(--plum);
+  font-size: var(--fs-label);
+  font-weight: 680;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
+}
+
+.scopeText {
+  margin-top: 6px;
   color: var(--ink);
-  font-weight: 560;
-  max-width: 34ch;
+  font-size: 1rem;
+  font-weight: 540;
+  line-height: 1.5;
+}
+
+/* ---- the index ----------------------------------------------------------- */
+.index {
+  --cols: 4.25rem minmax(0, 2.3fr) minmax(0, 1fr) minmax(0, 1.25fr) 6.5rem;
+  margin-top: clamp(40px, 1.5rem + 2.5vw, 64px);
+}
+
+.columns,
+.entry {
+  display: grid;
+  grid-template-columns: var(--cols);
+  column-gap: clamp(16px, 0.5rem + 1.4vw, 32px);
+}
+
+.columns {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 650;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
 }
 
 .list {
-  grid-column: 6 / -1;
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--ink);
 }
 
 .entry {
-  display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
-  column-gap: 24px;
   align-items: start;
-  padding-block: 24px 22px;
+  padding-block: 22px 18px;
   border-bottom: 1px solid var(--line-strong);
 }
 
 .year {
   color: var(--ink);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   font-stretch: 112%;
-  line-height: 1.3;
+  line-height: 1.35;
   font-variant-numeric: tabular-nums;
 }
 
 .title {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 660;
   font-stretch: 104%;
-  line-height: 1.35;
-  letter-spacing: -0.005em;
+  line-height: 1.38;
+  letter-spacing: -0.003em;
 }
 
 .meta {
@@ -79,19 +116,40 @@
   font-style: italic;
 }
 
-.brief {
-  margin-top: 8px;
+/* design + population sit in their own columns (subgrid keeps them aligned
+   with the header row); their labels are read aloud, shown only on phones */
+.facts {
+  grid-column: 3 / 5;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin: 0;
+}
+
+.facts dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.facts dd {
+  margin: 0;
   color: var(--ink);
-  font-size: 1rem;
-  max-width: 58ch;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  padding-top: 2px;
 }
 
 .source {
+  justify-self: end;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 44px;
   padding: 0 14px;
+  margin-top: -10px;
   border: 1px solid var(--line-strong);
   border-radius: var(--r-control);
   background: var(--white);
@@ -102,17 +160,28 @@
   white-space: nowrap;
   transition:
     border-color var(--t-fast) ease,
-    background-color var(--t-fast) ease;
+    color var(--t-fast) ease;
+}
+
+/* external-link mark */
+.source svg {
+  flex: none;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+
+.source:hover svg {
+  transform: translate(1px, -1px);
 }
 
 .source:hover {
   border-color: var(--blue);
+  color: var(--blue-deep);
   text-decoration: none;
 }
 
 /* disclosure: full citation, summary and every link */
 .more {
-  margin-top: 6px;
+  margin-top: 2px;
 }
 
 .more summary {
@@ -121,7 +190,7 @@
   gap: 8px;
   min-height: 44px;
   color: var(--blue);
-  font-size: 0.9375rem;
+  font-size: var(--fs-meta);
   font-weight: 600;
   cursor: pointer;
   list-style: none;
@@ -153,13 +222,17 @@
 .moreBody {
   display: grid;
   gap: 10px;
-  margin: 4px 0 8px;
+  margin: 4px 0 6px;
   padding: 16px 18px;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 12px;
   font-size: 0.9375rem;
   max-width: 64ch;
+}
+
+.more[open] .moreBody {
+  animation: wu-disclose var(--t-mid) var(--ease-out);
 }
 
 .fullTitle {
@@ -186,32 +259,81 @@
   font-weight: 600;
 }
 
-@media (max-width: 1023px) {
-  .head {
-    grid-column: 1 / -1;
-    position: static;
+@media (max-width: 1279px) {
+  .headText {
+    grid-column: 1 / span 7;
   }
-  .list {
-    grid-column: 1 / -1;
+  .scope {
+    grid-column: 8 / -1;
   }
 }
 
-@media (max-width: 599px) {
+/* tablet: study takes the full row, design + population beneath it */
+@media (max-width: 1023px) {
+  .headText,
+  .scope {
+    grid-column: 1 / -1;
+  }
+  .scope {
+    max-width: 60ch;
+  }
+  .index {
+    --cols: 4rem minmax(0, 1fr) minmax(0, 1fr) 6.5rem;
+  }
+  .columns {
+    display: none;
+  }
+  .list {
+    border-top: 1px solid var(--ink);
+  }
   .entry {
-    grid-template-columns: minmax(0, 1fr) auto;
-    row-gap: 6px;
+    row-gap: 12px;
+  }
+  .study {
+    grid-column: 2 / 4;
+  }
+  .source {
+    grid-column: 4;
+    grid-row: 1;
+    margin-top: 0;
+  }
+  .facts {
+    grid-column: 2 / 4;
+    grid-row: 2;
+  }
+  .facts dt {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    color: var(--ink-2);
+    font-size: var(--fs-label);
+    font-weight: 650;
+    font-stretch: var(--wdth-label);
+  }
+}
+
+/* phone: year and source on one line, then the study, then two facts */
+@media (max-width: 599px) {
+  .index {
+    --cols: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .entry {
+    row-gap: 10px;
   }
   .year {
     grid-column: 1;
     grid-row: 1;
-    font-size: 1.125rem;
     align-self: center;
   }
   .source {
     grid-column: 2;
     grid-row: 1;
   }
-  .body {
+  .study,
+  .facts {
     grid-column: 1 / -1;
+    grid-row: auto;
   }
 }

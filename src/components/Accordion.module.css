@@ -1,26 +1,29 @@
-/* hairline rows; the open row becomes a soft pale-blue panel */
+/* Hairline rows. The open row gets a blue key rule on the left and its answer
+   settles in; the plus turns into a minus. */
 .accordion {
-  border-top: 1px solid var(--line-strong);
+  border-top: 1px solid var(--ink);
 }
 
 .item {
   position: relative;
   border-bottom: 1px solid var(--line-strong);
-  border-radius: 0;
-  transition:
-    background-color var(--t-mid) ease,
-    border-radius var(--t-mid) ease;
 }
 
-.item[data-open='true'] {
-  background: var(--surface-blue);
-  border-radius: 14px;
-  border-bottom-color: transparent;
+.item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  background: var(--blue);
+  transform: scaleY(0);
+  transform-origin: 50% 0%;
+  transition: transform var(--t-mid) var(--ease-out);
 }
 
-/* hide the hairline above an open row so the panel reads as one shape */
-.item:has(+ .item[data-open='true']) {
-  border-bottom-color: transparent;
+.item[data-open='true']::before {
+  transform: none;
 }
 
 .heading {
@@ -34,25 +37,26 @@
 .trigger {
   display: flex;
   width: 100%;
-  min-height: 68px;
+  min-height: 72px;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 20px 16px 20px 20px;
+  padding: 18px 4px 18px 0;
+  overflow: hidden;
   background: none;
   border: 0;
-  border-radius: 14px;
   text-align: left;
   color: var(--ink);
-  font-size: 1.1875rem;
-  font-weight: 650;
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  font-weight: 640;
   font-stretch: 106%;
   line-height: 1.35;
   cursor: pointer;
 }
 
 .trigger:focus-visible {
-  outline-offset: 2px;
+  outline-offset: -2px;
+  border-radius: 6px;
 }
 
 .trigger:hover .question,
@@ -60,8 +64,15 @@
   color: var(--blue);
 }
 
+/* the open question steps in beside the key rule (transform, not padding) */
 .question {
-  transition: color var(--t-fast) ease;
+  transition:
+    color var(--t-fast) ease,
+    transform var(--t-mid) var(--ease-out);
+}
+
+.trigger[aria-expanded='true'] .question {
+  transform: translateX(20px);
 }
 
 /* plus that becomes a minus */
@@ -76,6 +87,10 @@
   transition:
     border-color var(--t-fast) ease,
     background-color var(--t-fast) ease;
+}
+
+.trigger:hover .icon {
+  border-color: var(--blue);
 }
 
 .icon::before,
@@ -119,12 +134,13 @@
 :global(.js) .item[data-open='false'] .panel {
   grid-template-rows: 0fr;
   visibility: hidden;
+  transition-duration: var(--t-fast);
 }
 
 .panelInner {
   overflow: hidden;
   min-height: 0;
-  padding: 0 72px 0 20px;
+  padding: 0 64px 0 20px;
 }
 
 .panelInner > p {
@@ -132,15 +148,17 @@
   color: var(--ink);
 }
 
-.panelInner > p:first-child {
-  padding-top: 2px;
-}
-
 .panelInner > p:last-child {
-  padding-bottom: 22px;
+  padding-bottom: 24px;
 }
 
 .panelInner > p + p {
   margin-top: 0.75em;
   color: var(--ink-2);
+}
+
+@media (max-width: 599px) {
+  .panelInner {
+    padding-right: 8px;
+  }
 }

@@ -12,8 +12,9 @@ export type Reference = {
   /** first author et al., for the compact meta line */
   lead: string;
   journalShort: string;
-  /** one faithful sentence: design and population, no results */
-  brief: string;
+  /** study design and who took part: the two columns a reader scans */
+  design: string;
+  population: string;
   authors: string;
   title: string;
   journal: string;
@@ -21,8 +22,10 @@ export type Reference = {
   links: { label: string; href: string }[];
 };
 
-export const researchScope =
-  'These studies look at warming methods before venous access. None of them evaluated the WARMUP sleeve.';
+export const researchScope = {
+  label: 'General warming research, not WARMUP',
+  text: 'These studies look at warming methods before venous access. None of them evaluated the WARMUP sleeve.',
+};
 
 export const researchIntro =
   'Four studies from the client’s reference list, each on local warming before peripheral venous access.';
@@ -34,7 +37,8 @@ export const references: Reference[] = [
     short: 'Hot towel versus hot pack for forearm vein dilation',
     lead: 'Yasuda K, et al.',
     journalShort: 'J Physiol Anthropol',
-    brief: 'Quasi-experimental study in 88 healthy female volunteers, measuring forearm veins after different warming methods.',
+    design: 'Quasi-experimental study',
+    population: '88 healthy female volunteers',
     authors: 'Yasuda K, Shishido I, Murayama M, Kaga S, Yano R.',
     title:
       'Venous dilation effect of hot towel (moist and dry heat) versus hot pack for peripheral intravenous catheterization: a quasi-experimental study.',
@@ -53,7 +57,8 @@ export const references: Reference[] = [
     short: 'Dry heat before venepuncture in children with difficult IV access',
     lead: 'Suchitra E, Srinivasan R.',
     journalShort: 'J Spec Pediatr Nurs',
-    brief: 'Randomized controlled trial of dry heat in children with difficult intravenous access. A paediatric study.',
+    design: 'Randomized controlled trial',
+    population: 'Children with difficult IV access (a paediatric study)',
     authors: 'Suchitra E, Srinivasan R.',
     title:
       'Effectiveness of dry heat application on ease of venepuncture in children with difficult intravenous access: a randomized controlled trial.',
@@ -71,7 +76,8 @@ export const references: Reference[] = [
     short: 'Dry versus moist heat before peripheral IV cannulation',
     lead: 'Jisha K, et al.',
     journalShort: 'Nitte Univ J Health Sci',
-    brief: 'Comparative study of 60 hospital patients allocated to dry heat, moist heat or no heat before cannulation.',
+    design: 'Comparative study',
+    population: '60 hospital patients',
     authors: 'Jisha K, Latha S, Joseph G.',
     title:
       'A comparative study on impact of dry versus moist heat application on feasibility of peripheral intravenous cannulation among the patients of a selected hospital at Mangalore.',
@@ -93,7 +99,8 @@ export const references: Reference[] = [
     short: 'Dry versus moist heat before peripheral IV insertion',
     lead: 'Fink RM, et al.',
     journalShort: 'Oncol Nurs Forum',
-    brief: 'Randomized controlled trial in 136 hematology-oncology outpatients comparing dry and moist heat applied to the arm.',
+    design: 'Randomized controlled trial',
+    population: '136 hematology-oncology outpatients',
     authors: 'Fink RM, Hjort E, Wenger B, Cook PF, Cunningham M, Orf A, Pare W, Zwink J.',
     title:
       'The impact of dry versus moist heat on peripheral IV catheter insertion in a hematology-oncology outpatient population.',

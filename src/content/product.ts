@@ -10,8 +10,8 @@ export const captions = {
   refFlatlay: 'Prototype 2.4, flat lay on a cutting mat (before the mitten update).',
   refWorn: 'Prototype 2.4, worn (fingerless hand section, before the mitten update).',
   wristSeam: 'Prototype 2.4 detail: brushed fleece meets the knit wrist section at a line of light topstitching. Colour-corrected photograph.',
-  fastening:
-    'Prototype 2.4 detail: the hook-and-loop strap at the upper-arm cuff, and the pouch’s bound slot. Colour-corrected photograph.',
+  photo: 'Photograph · Prototype 2.4',
+  visualization: 'Proposed visualization',
 };
 
 export const alts = {
@@ -19,8 +19,13 @@ export const alts = {
     'Proposed design visualization of the WARMUP sleeve laid flat. From the upper-arm end: a charcoal rib-knit cuff with a white hook-and-loop patch and an attached charcoal strap, a cream fleece body with one patch pouch and a dark bound slot, then a charcoal knit wrist section that closes into a mitten with a separate thumb.',
   wristSeam:
     'Close-up of Prototype 2.4 where the cream brushed fleece meets the charcoal knit wrist section, joined by a line of light topstitching.',
-  fastening:
-    'Close-up of Prototype 2.4: the charcoal rib-knit cuff with a white hook-and-loop patch, the attached strap with its hook-and-loop strip, and the patch pouch with its charcoal-bound slot on cream fleece.',
+  strap:
+    'Close-up of Prototype 2.4: the charcoal strap with its light hook-and-loop strip crossing the rib-knit cuff, which carries a white hook-and-loop patch.',
+  pouch:
+    'Close-up of Prototype 2.4: the patch pouch on the cream fleece, with its charcoal-bound slot and stitched rounded corner.',
+  fleece: 'Close-up of the cream brushed fleece of Prototype 2.4, with its soft nap and gentle folds.',
+  mitten:
+    'Proposed design visualization: the charcoal knit wrist section, with its light topstitching, continuing into a mitten with a separate thumb.',
   refFlatlay:
     'Original photograph of Prototype 2.4 laid flat on a green cutting mat, with a fingerless knit hand section at the right end.',
   refWorn:
@@ -31,9 +36,10 @@ export const hero = {
   title: 'Comfort begins with warmth.',
   descriptor: 'Arm-and-hand warming sleeve',
   lead: 'A fleece and cotton sleeve that patients wear before blood draws and peripheral IV placement, with an attached strap, heat-pack pouches and an integrated mitten.',
-  primary: { label: 'Explore the Sleeve', href: '#product' },
-  secondary: { label: 'View the Research', href: '#research' },
-  facts: ['Fleece and cotton', 'Attached fastening strap', 'Heat-pack pouches', 'Integrated mitten'],
+  primary: { label: 'Explore the sleeve', href: '#product' },
+  secondary: { label: 'View the research', href: '#research' },
+  /** the hero's scale line: what the sleeve covers, from end to end */
+  scale: { arm: 'Upper arm', hand: 'Hand' },
 };
 
 export const intro = {
@@ -100,29 +106,36 @@ export const details = {
   },
 };
 
+/** Close-ups, numbered like the anatomy (arm to hand) so the two views
+ * cross-reference. Photographs are Prototype 2.4 crops; the mitten is part
+ * of the proposed design visualization and is tagged as such. */
 export const construction = {
-  title: 'How the sleeve is built.',
-  intro: 'Four textile parts work together, from the upper-arm cuff to the integrated mitten.',
+  title: 'How the sleeve is built, up close.',
+  intro: 'Four parts, from the upper-arm cuff to the hand, numbered as on the sleeve above.',
+  legend: {
+    photo: 'A colour-corrected photograph of the prototype.',
+    visualization: 'Part of the proposed design with the requested mitten; not a photograph.',
+  },
   rows: [
     {
-      key: 'fleece' as const,
-      title: 'Fleece and cotton',
-      text: 'The maker describes the sleeve as high-quality fleece and cotton. A soft fleece body runs between charcoal knit ends.',
-    },
-    {
       key: 'strap' as const,
-      title: 'Adjustable fastening strap',
-      text: 'Attached at the upper-arm cuff, its hook-and-loop strip lets the sleeve be secured around the arm.',
+      title: 'Hook-and-loop fastening strap',
+      text: 'Attached at the upper-arm cuff, the strap carries a hook-and-loop strip, and a hook-and-loop patch sits on the rib-knit cuff. It lets the sleeve be secured around the arm.',
     },
     {
       key: 'pouch' as const,
       title: 'Heat-pack pouches',
-      text: 'Pockets on the sleeve can hold heat packs for additional warmth. The visible pouch opens through a bound slot.',
+      text: 'Pouches on the sleeve can hold heat packs for additional warmth. The patch pouch shown opens through a charcoal-bound slot.',
+    },
+    {
+      key: 'fleece' as const,
+      title: 'Fleece and cotton',
+      text: 'The maker describes the sleeve as high-quality fleece and cotton. A soft brushed fleece body runs between charcoal rib-knit ends.',
     },
     {
       key: 'mitten' as const,
       title: 'Integrated mitten',
-      text: 'The knit wrist section continues into a mitten with a separate thumb, so the hand is covered too. Shown as a proposed design visualization.',
+      text: 'The knit wrist section continues into a mitten with a separate thumb, so the hand is covered too.',
     },
   ],
 };
@@ -150,12 +163,17 @@ export const contact = {
   title: 'Learn more about WARMUP.',
   body: 'For product information or professional enquiries, get in touch.',
   notes: [
-    'Professional enquiries only. Please do not include patient information.',
-    'This form is a demo and is not connected yet, so messages are not sent.',
+    { label: 'Who it is for', text: 'Medical professionals and organisations with product enquiries.' },
+    { label: 'Privacy', text: 'Please do not include patient information.' },
   ],
+  formNote: 'This form is not connected yet, so messages are not sent.',
   privacy: 'Please do not include patient information.',
 };
 
 export const footer = {
   line: 'An arm-and-hand warming sleeve for patients, worn before blood draws and peripheral IV placement.',
+  notes: [
+    'Product information only. This site does not process orders.',
+    'Images labelled “proposed design visualization” show the requested mitten added to Prototype 2.4. They are not photographs of a manufactured product.',
+  ],
 };

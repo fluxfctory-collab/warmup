@@ -1,6 +1,6 @@
 /* Material detail + three short statements: what, when, how. */
 .section {
-  padding-block: clamp(72px, 3rem + 4.5vw, 120px) clamp(64px, 3rem + 3.5vw, 104px);
+  padding-block: var(--section-y) var(--section-y-tight);
   background: var(--white);
 }
 
@@ -16,58 +16,64 @@
   margin: 0;
 }
 
-/* the shared image frame for every material detail on the page */
+/* the shared image frame for photographs on light surfaces */
 .frame {
+  position: relative;
   overflow: hidden;
   border-radius: var(--r-frame);
-  box-shadow:
-    0 0 0 1px rgba(16, 36, 70, 0.06),
-    0 22px 44px -30px rgba(16, 36, 70, 0.45);
+  box-shadow: var(--shadow-frame);
 }
 
 .img {
+  display: block;
   width: 100%;
   aspect-ratio: 5 / 4;
   object-fit: cover;
 }
 
+.tag {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+}
+
 .caption {
-  margin-top: 12px;
+  margin-top: 14px;
   color: var(--ink-2);
   font-size: var(--fs-meta);
-  line-height: 1.45;
+  line-height: 1.5;
   max-width: 46ch;
 }
 
 .copy {
   grid-column: 7 / -1;
-  --reveal-delay: 80ms;
 }
 
 .copy h2 {
-  max-width: 13em;
+  max-width: 12em;
 }
 
 .points {
-  margin: 32px 0 0;
+  margin: clamp(28px, 1.25rem + 1vw, 40px) 0 0;
   border-top: 1px solid var(--line-strong);
 }
 
 .point {
   display: grid;
-  grid-template-columns: 11rem minmax(0, 1fr);
+  grid-template-columns: 10.5rem minmax(0, 1fr);
   gap: 4px 24px;
-  padding: 16px 0 17px;
+  padding: 18px 0 19px;
   border-bottom: 1px solid var(--line);
 }
 
 .point dt {
+  padding-top: 3px;
   color: var(--blue);
-  font-size: var(--fs-meta);
+  font-size: var(--fs-label);
   font-weight: 650;
-  font-stretch: 104%;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
   line-height: 1.6;
-  padding-top: 2px;
 }
 
 .point dd {
@@ -77,16 +83,39 @@
   line-height: 1.5;
 }
 
+/* general warming research, kept distinct from the product itself */
 .context {
-  margin-top: 22px;
+  margin-top: 24px;
   color: var(--ink-2);
   font-size: 1rem;
-  max-width: 52ch;
+  line-height: 1.6;
+  max-width: 54ch;
+}
+
+.contextLink {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.contextLink::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(-45deg);
+  transition: transform var(--t-fast) var(--ease-out);
+}
+
+.contextLink:hover::after {
+  transform: translate(3px, -2px) rotate(-45deg);
 }
 
 @media (max-width: 1023px) {
-  .figure {
-    grid-column: 1 / span 5;
+  .grid {
+    align-items: start;
   }
   .copy {
     grid-column: 6 / -1;

@@ -138,11 +138,14 @@ export function Contact() {
         <div className={styles.intro} data-reveal>
           <h2 id="contact-title">{contact.title}</h2>
           <p className={styles.body}>{contact.body}</p>
-          <ul className={styles.notes}>
+          <dl className={styles.notes}>
             {contact.notes.map((n) => (
-              <li key={n}>{n}</li>
+              <div key={n.label} className={styles.note}>
+                <dt>{n.label}</dt>
+                <dd>{n.text}</dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </div>
 
         <form className={styles.form} noValidate onSubmit={onSubmit} aria-labelledby="contact-title" data-reveal>
@@ -182,6 +185,7 @@ export function Contact() {
             <button type="submit" className={`${buttonStyles.button} ${styles.submit}`} disabled={status.kind === 'sending'}>
               {status.kind === 'sending' ? 'Sending…' : 'Send message'}
             </button>
+            {!contactConfig.endpoint && <p className={styles.formNote}>{contact.formNote}</p>}
             <div className={styles.statusWrap} role="status" aria-live="polite">
               {announce && <p className="visually-hidden">{announce}</p>}
               {status.kind === 'not-connected' && (

@@ -1,10 +1,11 @@
-/* The one substantial deep navy section: contrast for construction. */
+/* The one deep navy chapter. Left: a sticky heading with a small legend that
+   explains the two kinds of picture. Right: four close-ups in a staggered
+   two-column grid (the right column drops by a half-step), sized close to
+   the source crops' own resolution so the textile stays crisp. Flat navy, no
+   glow: the photographs carry the warmth. */
 .section {
-  position: relative;
-  padding-block: clamp(80px, 3rem + 6vw, 136px);
-  background:
-    radial-gradient(ellipse 50% 60% at 18% 70%, rgba(31, 56, 172, 0.32) 0%, rgba(31, 56, 172, 0) 70%),
-    var(--navy);
+  padding-block: var(--section-y);
+  background: var(--navy);
   color: var(--on-navy);
 }
 
@@ -17,138 +18,209 @@
   outline-color: var(--white);
 }
 
-.grid {
+.layout {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: auto 1fr;
   column-gap: var(--gutter);
   row-gap: 40px;
+  align-items: start;
 }
 
 .head {
-  grid-column: 1 / span 5;
-  grid-row: 1;
+  grid-column: 1 / span 4;
+  position: sticky;
+  top: calc(var(--header-h) + 48px);
 }
 
 .intro {
-  margin-top: 18px;
+  margin-top: 20px;
   color: var(--on-navy-2);
-  font-size: 1.125rem;
   max-width: 34ch;
 }
 
-.visual {
-  grid-column: 1 / span 5;
-  grid-row: 2;
-  margin: 0;
-}
-
-.frame {
-  overflow: hidden;
-  border-radius: var(--r-frame);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 30px 60px -34px rgba(0, 0, 0, 0.6);
-}
-
-.img {
-  width: 100%;
-  aspect-ratio: 5 / 5.4;
-  object-fit: cover;
-}
-
-.caption {
-  margin-top: 14px;
+.legend {
+  display: grid;
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 24px 0 0;
+  list-style: none;
+  border-top: 1px solid var(--navy-line);
   color: var(--on-navy-2);
   font-size: var(--fs-meta);
-  line-height: 1.45;
-  max-width: 44ch;
+  line-height: 1.5;
+  max-width: 34ch;
 }
 
-.rows {
-  grid-column: 7 / -1;
-  grid-row: 1 / 3;
-  align-self: center;
+.legend li {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+.items {
+  grid-column: 6 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(24px, 0.5rem + 2.6vw, 56px);
+  row-gap: clamp(48px, 2rem + 2.4vw, 72px);
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--navy-line);
 }
 
-.row {
+/* the editorial stagger */
+.item:nth-child(even) {
+  margin-top: clamp(56px, 1.5rem + 5vw, 128px);
+}
+
+.frame {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r-frame);
+  box-shadow: var(--shadow-navy);
+}
+
+.img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+}
+
+.body {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  gap: 22px;
-  align-items: start;
-  padding-block: 30px;
-  border-bottom: 1px solid var(--navy-line);
+  gap: 10px;
+  margin-top: 20px;
+  max-width: 44ch;
 }
 
-.icon {
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: clamp(1.1875rem, 1.12rem + 0.25vw, 1.3125rem);
+  text-wrap: balance;
+}
+
+/* the same rounded-square keys as the anatomy, outlined on navy */
+.num {
+  flex: none;
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 12px;
-  color: #a9bcf5;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--navy-accent);
+  border-radius: 8px;
+  color: var(--navy-accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-3px);
 }
 
-.row[data-key='mitten'] .icon {
-  color: var(--coral);
-  border-color: rgba(228, 71, 51, 0.55);
+.item[data-key='mitten'] .num {
+  border-color: var(--coral);
+  color: var(--coral-on-navy);
 }
 
-.rowTitle {
-  font-size: 1.3125rem;
-  font-weight: 660;
-  font-stretch: 108%;
-  text-wrap: wrap;
-}
-
-.rowText {
-  margin-top: 8px;
+.text {
   color: var(--on-navy-2);
-  max-width: 46ch;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-@media (max-width: 1023px) {
+/* small desktop and tablet: heading above, close-ups in two columns */
+@media (max-width: 1279px) {
   .head {
     grid-column: 1 / -1;
+    position: static;
   }
-  .visual {
-    grid-column: 1 / span 5;
-    grid-row: 2;
-    align-self: start;
+  .intro,
+  .legend {
+    max-width: 52ch;
   }
-  .rows {
-    grid-column: 6 / -1;
-    grid-row: 2;
-    align-self: start;
+  .legend {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--gutter);
   }
-  .row {
-    padding-block: 22px;
-    gap: 16px;
+  .items {
+    grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 767px) {
-  .grid {
-    grid-template-rows: none;
+/* phone: a compact list, small close-up beside its text */
+@media (max-width: 599px) {
+  .legend {
+    grid-template-columns: 1fr;
   }
-  .visual,
-  .rows {
-    grid-column: 1 / -1;
-    grid-row: auto;
+  .items {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+    border-top: 1px solid var(--navy-line);
   }
-  .row {
-    grid-template-columns: 40px minmax(0, 1fr);
+  .item,
+  .item:nth-child(even) {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 0;
+    padding-block: 22px;
+    border-bottom: 1px solid var(--navy-line);
   }
-  .icon {
-    width: 40px;
-    height: 40px;
+  .frame {
+    align-self: start;
+    overflow: visible;
+    border-radius: 0;
+    box-shadow: none;
   }
-  .rowTitle {
-    font-size: 1.1875rem;
+  .img {
+    border-radius: 12px;
+    box-shadow: var(--shadow-navy);
+  }
+  /* the provenance tag becomes a short line under the close-up */
+  .tag {
+    position: static;
+    display: flex;
+    align-items: baseline;
+    margin-top: 8px;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    color: var(--on-navy-2);
+    font-size: 0.75rem;
+    font-weight: 520;
+    white-space: normal;
+  }
+  .tag::before {
+    transform: translateY(-1px);
+  }
+  .body {
+    margin-top: 0;
+    gap: 6px;
+  }
+  .title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 1.125rem;
+  }
+  .num {
+    width: 26px;
+    height: 26px;
+    font-size: 0.8125rem;
+    transform: none;
+  }
+  .text {
+    font-size: 0.9375rem;
+    line-height: 1.55;
   }
 }

@@ -1,58 +1,86 @@
-/* WARMUP design tokens. See docs/DESIGN_PLAN.md §2–4. */
+/* WARMUP design tokens. See docs/DESIGN_PLAN.md §2–4 and §10 (refinement 3).
+   Measured contrast for every text pair is listed in docs/DESIGN_PLAN.md §10. */
 :root {
-  /* colour: cool neutrals carry the page, the logo's blue carries action,
-     coral (the logo's warm end) is rare and never small text */
+  /* ---- surfaces: white and pale neutrals carry the page; one navy chapter */
   --white: #ffffff;
-  --bg: #f8fafd; /* cool neutral */
-  --surface-blue: #edf3fc; /* pale blue */
-  --surface-warm: #fff4ef;
-  --ink: #102446;
-  --ink-2: #526078;
-  --line: #dce3ee;
-  --line-strong: #c3cddd;
-  --blue: #1f38ac;
-  --blue-deep: #0f31af;
-  --blue-tint: rgba(31, 56, 172, 0.14);
-  --plum: #4a3488;
-  --coral: #e44733; /* non-text only */
-  --coral-text: #c4361f; /* coral as text or under white text */
-  --coral-tint: rgba(228, 71, 51, 0.16);
-  --navy: #102446; /* the one deep section */
+  --bg: #f6f8fb; /* cool neutral */
+  --plate: #eef2f7; /* product plate behind every proposed visualization
+                       (CROP_BG in scripts/build_images.py) */
+  --plate-hi: #fbfcfe; /* the plate's softly lit centre */
+  --surface-blue: #edf2f9; /* anatomy chapter */
+  --surface-warm: #fbf6f2; /* contact: the warm end of the page */
+  --navy: #102446; /* the one deep chapter (construction) */
+
+  /* ---- text and lines */
+  --ink: #102446; /* 15.4:1 on white */
+  --ink-2: #4e5c74; /* 6.0:1 on --plate, 6.8:1 on white */
+  --line: #dfe5ee;
+  --line-strong: #c5cfdd;
+  --line-input: #76839a; /* 3.4:1+ on every light surface: a visible UI boundary */
   --on-navy: #ffffff;
-  --on-navy-2: #c5cddc; /* 9.9:1 on navy */
-  --navy-line: rgba(255, 255, 255, 0.16);
-  --navy-raise: #18305a;
-  --fleece: #f1ece3;
-  --knit: #3e434b;
+  --on-navy-2: #c5cddc; /* 9.6:1 on navy */
+  --navy-line: rgba(255, 255, 255, 0.14);
+  --navy-accent: #a9bcf5; /* 8.2:1 on navy */
 
-  /* type */
+  /* ---- brand: the logo's blue carries action; coral, its warm end, is rare */
+  --blue: #1f38ac; /* 9.5:1 on white */
+  --blue-deep: #16297f; /* hover / pressed */
+  --blue-tint: rgba(31, 56, 172, 0.12);
+  --plum: #4a3488; /* one use: the research scope rule */
+  --coral: #e44733; /* non-text only: marks, ticks, the mitten marker */
+  --coral-text: #c4361f; /* coral as text: 4.8:1 on --plate, 5.4:1 on white */
+  --coral-on-navy: #f08a7a; /* 6.3:1 on navy */
+  --coral-tint: rgba(228, 71, 51, 0.14);
+
+  /* ---- elevation: one scale, used sparingly */
+  --shadow-frame: 0 0 0 1px rgba(16, 36, 70, 0.07), 0 18px 40px -28px rgba(16, 36, 70, 0.4);
+  --shadow-raise: 0 1px 2px rgba(16, 36, 70, 0.05), 0 16px 36px -26px rgba(16, 36, 70, 0.32);
+  --shadow-navy: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 48px -30px rgba(0, 0, 0, 0.6);
+
+  /* ---- type: Archivo's width axis rhymes with the wide wordmark */
   --font: 'Archivo Variable', 'Helvetica Neue', Arial, system-ui, sans-serif;
-  --fs-h1: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem);
-  --fs-h2: clamp(1.75rem, 1.1rem + 2vw, 2.875rem);
-  --fs-h3: 1.3125rem;
-  --fs-lead: clamp(1.1875rem, 1.05rem + 0.45vw, 1.375rem);
+  --fs-display: clamp(2.25rem, 1.05rem + 4.5vw, 5.25rem);
+  --fs-h2: clamp(1.875rem, 1.3rem + 1.5vw, 2.75rem);
+  --fs-h3: clamp(1.1875rem, 1.12rem + 0.25vw, 1.3125rem);
+  --fs-lead: clamp(1.125rem, 1.04rem + 0.35vw, 1.3125rem);
   --fs-body: 1.0625rem;
-  --fs-small: 0.875rem;
+  --fs-small: 0.9375rem;
   --fs-meta: 0.875rem;
-  --wdth-display: 116%;
-  --wdth-h2: 114%;
-  --wdth-h3: 108%;
+  --fs-label: 0.8125rem;
+  --wdth-display: 118%;
+  --wdth-h2: 112%;
+  --wdth-h3: 106%;
+  --wdth-label: 110%;
 
-  /* layout */
+  /* ---- space: 4px base */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 40px;
+  --s-8: 48px;
+  --s-9: 64px;
+  --s-10: 80px;
+  --section-y: clamp(80px, 3.5rem + 4.4vw, 136px);
+  --section-y-tight: clamp(64px, 3rem + 3vw, 104px);
+
+  /* ---- layout */
   --container: 1200px;
   --gutter: 24px;
   --pad: 64px;
   --header-h: 80px;
 
-  /* shape */
-  --r-control: 8px;
+  /* ---- shape */
+  --r-control: 10px;
   --r-frame: 16px;
+  --r-plate: 28px;
 
-  /* motion */
+  /* ---- motion: CSS transitions share GSAP's "power3.out" feel */
   --ease-out: cubic-bezier(0.22, 0.8, 0.26, 1);
   --t-fast: 160ms;
-  --t-mid: 220ms;
-  --t-reveal: 440ms;
+  --t-mid: 240ms;
 }
 
 @media (max-width: 1279px) {
@@ -66,6 +94,7 @@
     --gutter: 16px;
     --pad: 20px;
     --header-h: 76px;
+    --r-plate: 22px;
   }
 }
 

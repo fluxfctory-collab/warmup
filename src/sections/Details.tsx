@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Picture } from '../components/Picture';
 import { images } from '../content/images';
 import { alts, anatomy, captions, details } from '../content/product';
 import type { FeatureKey } from '../content/product';
+import { MOTION_OK, gsap, motion, useGSAP } from '../motion/gsap';
 import styles from './Details.module.css';
+
+// leader lines grow out of their marker: up-lines from the bottom, down-lines from the top
+const lineOrigin = (el: Element) => ((el as HTMLElement).dataset.dir === 'up' ? '50% 100%' : '50% 0%');
 
 /**
  * Product anatomy. Four numbered hotspots (the numbers key dots to notes),
@@ -12,12 +16,60 @@ import styles from './Details.module.css';
  * never cross each other or text. Everything is visible without interaction;
  * dots and note titles are buttons with aria-pressed, and the selected
  * feature gets a subtle outline on the image.
+ *
+ * Motion (GSAP, only when motion is allowed): the leader lines draw out from
+ * their markers once, when the diagram scrolls into view, and activating a
+ * feature gives its marker a single gentle pulse and redraws its line.
  */
 export function Details() {
   const [pressed, setPressed] = useState<FeatureKey | null>(null);
   const [hovered, setHovered] = useState<FeatureKey | null>(null);
   const shown = hovered ?? pressed;
-  const toggle = (k: FeatureKey) => setPressed((cur) => (cur === k ? null : k));
+  const root = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+
+  const { contextSafe } = useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION_OK, () => {
+        const lines = gsap.utils.toArray<HTMLElement>('[data-leader]', root.current);
+        gsap.from(lines, {
+          scaleY: 0,
+          transformOrigin: (_: number, el: Element) => lineOrigin(el),
+          duration: motion.slow,
+          ease: motion.easeLine,
+          stagger: 0.12,
+          clearProps: 'transform',
+          scrollTrigger: { trigger: stage.current, start: 'top 72%', once: true },
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
+
+  // gentle, one-off emphasis; created after mount, so wrapped in contextSafe
+  const emphasize = contextSafe((key: FeatureKey) => {
+    if (!window.matchMedia(MOTION_OK).matches) return;
+    const q = gsap.utils.selector(root);
+    gsap.fromTo(
+      q(`[data-dot="${key}"]`),
+      { scale: 1 },
+      { scale: 1.14, duration: 0.16, ease: 'power1.out', yoyo: true, repeat: 1, overwrite: true, clearProps: 'transform' },
+    );
+    q(`[data-leader="${key}"]`).forEach((line) =>
+      gsap.fromTo(
+        line,
+        { scaleY: 0, transformOrigin: lineOrigin(line) },
+        { scaleY: 1, duration: 0.5, ease: motion.easeLine, overwrite: true, clearProps: 'transform' },
+      ),
+    );
+  });
+
+  const toggle = (k: FeatureKey) => {
+    if (pressed !== k) emphasize(k);
+    setPressed((cur) => (cur === k ? null : k));
+  };
 
   const overlay = (vertical: boolean) => (
     <>
@@ -41,6 +93,7 @@ export function Details() {
             type="button"
             className={styles.dot}
             data-key={f.key}
+            data-dot={f.key}
             aria-pressed={pressed === f.key}
             aria-label={`${i + 1}: ${f.title}`}
             style={{ left: `${p.x}%`, top: `${p.y}%` }}
@@ -58,7 +111,7 @@ export function Details() {
   );
 
   return (
-    <section id="details" className={styles.section} aria-labelledby="details-title">
+    <section id="details" ref={root} className={styles.section} aria-labelledby="details-title">
       <div className={`container ${styles.head}`} data-reveal>
         <h2 id="details-title">{details.title}</h2>
         <p className={styles.intro}>{details.intro}</p>
@@ -67,7 +120,7 @@ export function Details() {
       <figure className={`container ${styles.anatomy}`} data-shown={shown ?? ''}>
         {/* horizontal on tablet/desktop, vertical on mobile: two boxes so the
             percentage-positioned hotspots always match the visible image */}
-        <div className={`${styles.stage} ${styles.stageH}`}>
+        <div ref={stage} className={`${styles.stage} ${styles.stageH}`}>
           <Picture
             image={images.flatlay}
             alt={alts.sleeve}
@@ -83,6 +136,7 @@ export function Details() {
                 className={styles.leader}
                 data-dir={i < 2 ? 'up' : 'down'}
                 data-key={f.key}
+                data-leader={f.key}
                 style={{ left: `${p.x}%`, ['--y' as string]: `${p.y}%` }}
               />
             );

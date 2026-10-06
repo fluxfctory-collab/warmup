@@ -10,11 +10,14 @@
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc -b",
     "images": "python3 scripts/build_images.py",
+    "images:crops": "python3 scripts/build_images.py --crops",
     "shots": "node scripts/shots.mjs",
     "qa": "node scripts/qa.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
+    "@gsap/react": "^2.1.2",
+    "gsap": "^3.15.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

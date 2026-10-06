@@ -15,6 +15,9 @@ export function ProductIntro() {
               sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) 42vw, 486px"
               imgClassName={styles.img}
             />
+            <span className={`tag ${styles.tag}`} data-kind="photo" aria-hidden="true">
+              {captions.photo}
+            </span>
           </div>
           <figcaption className={styles.caption}>{captions.wristSeam}</figcaption>
         </figure>
@@ -29,7 +32,10 @@ export function ProductIntro() {
             ))}
           </dl>
           <p className={styles.context}>
-            {intro.context} <a href="#research">See the research it draws on.</a>
+            {intro.context}{' '}
+            <a href="#research" className={styles.contextLink}>
+              See the research it draws on
+            </a>
           </p>
         </div>
       </div>

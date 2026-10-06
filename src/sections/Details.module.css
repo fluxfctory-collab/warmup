@@ -1,6 +1,6 @@
 /* The product chapter: pale blue surface, one large view, annotations. */
 .section {
-  padding-block: clamp(80px, 3rem + 6vw, 136px) clamp(64px, 3rem + 3vw, 96px);
+  padding-block: var(--section-y) var(--section-y-tight);
   background: var(--surface-blue);
 }
 
@@ -345,11 +345,13 @@
 .leader[data-dir='up'] {
   top: calc(-1 * var(--row-gap));
   height: calc(var(--y) + var(--row-gap));
+  transform-origin: 50% 100%;
 }
 
 .leader[data-dir='down'] {
   top: var(--y);
   bottom: calc(-1 * var(--row-gap));
+  transform-origin: 50% 0%;
 }
 
 /* ---- active pair ------------------------------------------------------- */
@@ -452,6 +454,10 @@
   color: var(--blue);
 }
 
+.refSummary:hover .refIcon {
+  border-color: var(--blue);
+}
+
 .refIcon {
   position: absolute;
   right: 4px;
@@ -462,6 +468,7 @@
   border: 1px solid var(--line-strong);
   border-radius: 50%;
   background: var(--white);
+  transition: border-color var(--t-fast) ease;
 }
 
 .refIcon::before,
@@ -484,6 +491,10 @@
 
 .reference[open] .refIcon::after {
   transform: rotate(0deg);
+}
+
+.reference[open] .refBody {
+  animation: wu-disclose var(--t-mid) var(--ease-out);
 }
 
 .refBody {

@@ -11,6 +11,9 @@ export function Faq() {
             Questions, answered plainly.
           </h2>
           <p className={styles.sub}>Short answers about what the sleeve is and how it is meant to be used.</p>
+          <p className={styles.more}>
+            Something else? <a href="#contact">Send a professional enquiry</a>
+          </p>
         </div>
         <div className={styles.list} data-reveal>
           <Accordion items={faqs} />

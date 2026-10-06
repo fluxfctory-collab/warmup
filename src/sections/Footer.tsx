@@ -11,7 +11,10 @@ export function Footer() {
           <Logo className={styles.logo} sizes="200px" width={200} />
           <p className={styles.line}>{footer.line}</p>
         </div>
-        <nav aria-label="Footer" className={styles.nav}>
+        <nav aria-labelledby="footer-nav-title" className={styles.nav}>
+          <p id="footer-nav-title" className={`label ${styles.colTitle}`}>
+            On this page
+          </p>
           <ul>
             {[...navItems, contactCta].map((n) => (
               <li key={n.href}>
@@ -20,9 +23,22 @@ export function Footer() {
             ))}
           </ul>
         </nav>
-        <p className={styles.copy}>
-          &copy; <span suppressHydrationWarning>{new Date().getFullYear()}</span> WARMUP
-        </p>
+        <div className={styles.about}>
+          <p className={`label ${styles.colTitle}`}>About this site</p>
+          <ul>
+            {footer.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        </div>
+        <div className={styles.bar}>
+          <p>
+            &copy; <span suppressHydrationWarning>{new Date().getFullYear()}</span> WARMUP
+          </p>
+          <a href="#top" className={styles.top}>
+            Back to top
+          </a>
+        </div>
       </div>
     </footer>
   );

@@ -1,6 +1,6 @@
 /* The warm end of the page's cool-to-warm journey. */
 .section {
-  padding-block: clamp(72px, 3rem + 5vw, 120px);
+  padding-block: var(--section-y);
   background: var(--surface-warm);
 }
 
@@ -13,7 +13,8 @@
 
 .intro {
   grid-column: 1 / span 5;
-  align-self: center;
+  align-self: start;
+  padding-top: clamp(0px, 2vw, 32px);
 }
 
 .body {
@@ -26,32 +27,33 @@
 
 .notes {
   display: grid;
-  gap: 0;
-  margin: 32px 0 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid #efd9cf;
-  max-width: 40ch;
+  margin: 36px 0 0;
+  border-top: 1px solid #ecdcd2;
+  max-width: 42ch;
 }
 
-.notes li {
-  display: flex;
-  gap: 12px;
+.note {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 4px 16px;
   padding: 14px 0;
-  border-bottom: 1px solid #efd9cf;
-  color: var(--ink-2);
-  font-size: 0.9375rem;
+  border-bottom: 1px solid #ecdcd2;
+  font-size: var(--fs-small);
   line-height: 1.5;
 }
 
-.notes li::before {
-  content: '';
-  flex: none;
-  width: 8px;
-  height: 8px;
-  margin-top: 0.55em;
-  border-radius: 2.5px;
-  background: var(--coral);
+.note dt {
+  color: var(--ink);
+  font-size: var(--fs-label);
+  font-weight: 650;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
+  padding-top: 2px;
+}
+
+.note dd {
+  margin: 0;
+  color: var(--ink-2);
 }
 
 .form {
@@ -60,13 +62,9 @@
   gap: 22px;
   padding: clamp(24px, 1rem + 2.2vw, 44px);
   background: var(--white);
-  border: 1px solid #f0dcd3;
+  border: 1px solid #eadbd2;
   border-radius: 20px;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 28px 60px -40px rgba(16, 36, 70, 0.45),
-    0 6px 18px -12px rgba(196, 54, 31, 0.18);
-  --reveal-delay: 80ms;
+  box-shadow: var(--shadow-raise);
 }
 
 .row {
@@ -101,10 +99,10 @@
 
 .input {
   width: 100%;
-  min-height: 48px;
+  min-height: 50px;
   padding: 12px 14px;
   background: var(--white);
-  border: 1px solid #76839a;
+  border: 1px solid var(--line-input);
   border-radius: var(--r-control);
   color: var(--ink);
   font: inherit;
@@ -176,8 +174,28 @@
   cursor: progress;
 }
 
+.formNote {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex: 1 1 220px;
+  color: var(--ink-2);
+  font-size: var(--fs-meta);
+  line-height: 1.45;
+}
+
+.formNote::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--ink-2);
+  transform: translateY(-1px);
+}
+
 .statusWrap {
-  flex: 1 1 260px;
+  flex: 1 1 100%;
 }
 
 .status {
@@ -205,15 +223,33 @@
   border: 1px solid #c3e2cf;
 }
 
+@media (max-width: 1279px) {
+  .intro {
+    padding-right: 16px;
+  }
+  .form {
+    grid-column: 6 / -1;
+  }
+}
+
 @media (max-width: 1023px) {
   .intro,
   .form {
     grid-column: 1 / -1;
+  }
+  .intro {
+    padding-right: 0;
   }
 }
 
 @media (max-width: 599px) {
   .row {
     grid-template-columns: 1fr;
+  }
+  .note {
+    grid-template-columns: 1fr;
+  }
+  .submit {
+    width: 100%;
   }
 }

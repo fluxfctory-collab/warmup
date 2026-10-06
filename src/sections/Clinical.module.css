@@ -1,6 +1,6 @@
-/* Compact clinical context: one heading row, then three short columns. */
+/* Two moments of use, split by a single vertical hairline, then a reuse band. */
 .section {
-  padding-block: clamp(64px, 3rem + 3.5vw, 104px);
+  padding-block: var(--section-y-tight);
   background: var(--white);
 }
 
@@ -13,7 +13,7 @@
 }
 
 .head h2 {
-  max-width: 16em;
+  max-width: 15em;
 }
 
 .scope {
@@ -21,28 +21,32 @@
   font-size: var(--fs-meta);
 }
 
-.row {
+.moments {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--gutter);
-  margin-top: clamp(32px, 1.5rem + 1.5vw, 48px);
-  align-items: stretch;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: clamp(36px, 1.5rem + 2vw, 56px);
+  border-top: 1px solid var(--ink);
 }
 
-.block {
-  padding-top: 18px;
-  border-top: 2px solid var(--blue);
+.moment {
+  padding: 28px clamp(24px, 1rem + 2.4vw, 56px) 8px 0;
+}
+
+.moment + .moment {
+  padding-left: clamp(24px, 1rem + 2.4vw, 56px);
+  padding-right: 0;
+  border-left: 1px solid var(--line-strong);
 }
 
 .label {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
   color: var(--blue);
-  font-size: var(--fs-meta);
+  font-size: var(--fs-label);
   font-weight: 650;
-  font-stretch: 104%;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
 }
 
 .index {
@@ -52,56 +56,79 @@
   height: 24px;
   border: 1.5px solid var(--blue);
   border-radius: 7px;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
-.block h3 {
-  font-size: 1.375rem;
+.title {
+  margin-top: 14px;
+  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+  font-weight: 680;
+  font-stretch: 110%;
+  letter-spacing: -0.015em;
+  line-height: 1.18;
 }
 
 .text {
-  margin-top: 10px;
+  margin-top: 12px;
   color: var(--ink-2);
-  max-width: 40ch;
+  max-width: 44ch;
 }
 
 /* intended use, set apart from the two procedures */
-.retention {
-  padding: 18px 22px 22px;
+.reuse {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: 8px var(--gutter);
+  align-items: baseline;
+  margin-top: clamp(32px, 1.25rem + 2vw, 48px);
+  padding: 22px 26px;
   background: var(--bg);
-  border: 1px solid var(--line);
-  border-top: 2px solid var(--ink);
-  border-radius: 0 0 12px 12px;
+  border-radius: var(--r-frame);
 }
 
-.retentionLabel {
-  color: var(--ink-2);
-  font-size: var(--fs-meta);
+.reuseLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-size: var(--fs-label);
   font-weight: 650;
-  font-stretch: 104%;
+  font-stretch: var(--wdth-label);
+  letter-spacing: 0.01em;
 }
 
-.retentionText {
-  margin-top: 10px;
+.reuseLabel::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2.5px;
+  background: var(--ink);
+}
+
+.reuseText {
   color: var(--ink);
   font-size: 1.0625rem;
-  font-weight: 540;
-  line-height: 1.5;
+  font-weight: 520;
+  line-height: 1.55;
+  max-width: 62ch;
 }
 
-@media (max-width: 1023px) {
-  .row {
-    grid-template-columns: 1fr 1fr;
-  }
-  .retention {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 599px) {
-  .row {
+@media (max-width: 767px) {
+  .moments {
     grid-template-columns: 1fr;
-    row-gap: 28px;
+  }
+  .moment,
+  .moment + .moment {
+    padding: 24px 0 20px;
+    border-left: 0;
+  }
+  .moment + .moment {
+    border-top: 1px solid var(--line-strong);
+  }
+  .reuse {
+    grid-template-columns: 1fr;
+    padding: 20px;
   }
 }

@@ -10,6 +10,7 @@ const app = (
   </StrictMode>
 );
 
-// production HTML is prerendered (scripts/prerender.mjs); dev is not
-if (root.hasChildNodes()) hydrateRoot(root, app);
+// production HTML is prerendered (scripts/prerender.mjs); dev is not, and
+// its #root holds only the <!--app-html--> placeholder comment
+if (root.firstElementChild) hydrateRoot(root, app);
 else createRoot(root).render(app);
